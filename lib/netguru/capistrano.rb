@@ -30,6 +30,12 @@ module Netguru
 
         set(:current_revision)  { capture("cd #{current_path}; git rev-parse HEAD").strip }
 
+        
+        before "deploy:update_code" do
+          run("cd #{current_path} && astrails-safe -v config/safe.rb --local") if stage == 'production' or stage == 'beta'
+        end
+
+
         #check secondcoder
         before "deploy:update_code" do
           if ng_conf.include?(:secondcoder)
