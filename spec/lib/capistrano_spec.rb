@@ -1,4 +1,4 @@
-require 'spec_helper'
+#require 'spec_helper'
 
 require 'capistrano/configuration'
 require 'netguru/capistrano'
@@ -6,8 +6,12 @@ require 'netguru/capistrano'
 describe Netguru::Capistrano do
   before do
     @configuration = Capistrano::Configuration.new
+    @configuration.set(:application, 'dummy_test')
+    @configuration.set(:stage, 'test')
+    @configuration.set(:webserver, 'example.com')
     Netguru::Capistrano.load_into(@configuration)
     @configuration.dry_run = true
+
   end
 
   it "should define ng_conf" do
