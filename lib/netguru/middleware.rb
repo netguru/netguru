@@ -5,12 +5,8 @@ class Netguru::Middleware
   end
   
   def call(env)
-    if defined?(Rails) and Rails.env.development?
-      status, headers, response = @app.call(env)
-      [status, headers, [response.body.gsub("</body>", "#{secondcoder_response}</body>")]]
-    else
-      @app.call(env)
-    end
+    status, headers, response = @app.call(env)
+    [status, headers, [response.body.gsub("</body>", "#{secondcoder_response}</body>")]]
   end
 
   def application_name
