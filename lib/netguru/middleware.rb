@@ -10,15 +10,15 @@ class Netguru::Middleware
   end
 
   def application_name
-    #TO DO: better way?
-    Rails.application.class.to_s.split("::")[0].downcase
+    Rails.application.class.parent_name.downcase
   end
 
   def secondcoder_response
+    response = (timeout(0.5){ open("http://secondcoder.com/api/netguru/#{application_name}/check").read } rescue "To slow to access secondcoder.")
     %{
       <div id='secondcoder'>
-    #{open("http://secondcoder.com/api/netguru/#{application_name}/check").read}
-    </div>
+      #{response}
+      </div>
     #{styles}
     }
    end
