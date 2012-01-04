@@ -1,5 +1,5 @@
 require "netguru/version"
-
+require "netguru/railtie" if defined? Rails
 module Netguru
-  # Your code goes here...
+  # Your awesome code goes here...
 end

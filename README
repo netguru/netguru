@@ -1,1 +1,5 @@
 Gem designed to take the load of config/deploy.rb
+
+TO DO:
+- specs for secondcoder response check during reponse
+- specs for sc middleware

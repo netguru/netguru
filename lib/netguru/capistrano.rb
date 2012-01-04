@@ -1,5 +1,5 @@
 # Defines netguru custom task to deploy project.
-
+require 'open-uri'
 require 'capistrano'
 
 module Netguru

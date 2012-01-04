@@ -1,5 +1,3 @@
-#require 'spec_helper'
-
 require 'capistrano/configuration'
 require 'netguru/capistrano'
 
