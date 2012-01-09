@@ -32,7 +32,7 @@ module Netguru
 
         
         before "deploy:update_code" do
-          run("cd #{current_path} && bundle exec astrails-safe -v config/safe.rb --local") if stage == 'production' or stage == 'beta'
+          run("cd #{current_path} && astrails-safe -v config/safe.rb --local") if stage == 'production' or stage == 'beta'
         end
 
 
