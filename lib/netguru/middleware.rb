@@ -6,7 +6,11 @@ class Netguru::Middleware
   
   def call(env)
     status, headers, response = @app.call(env)
-    [status, headers, [response.body.gsub("</body>", "#{secondcoder_response}</body>")]]
+    if response.present?
+      [status, headers, [response.body.gsub("</body>", "#{secondcoder_response}</body>")]]
+    else
+      [status, headers, [response]]
+    end
   end
 
   def application_name
@@ -19,28 +23,28 @@ class Netguru::Middleware
       <div id='secondcoder'>
       #{response}
       </div>
-    #{styles}
+      #{styles}
     }
-   end
+  end
 
   def styles
     %{  
       <style>
       #secondcoder {
-        position: fixed;
-        top: 10px;
-        right: 10px;
-        color: #990000;
-        background-color: white;
-        padding: 2px 5px;
-        font-size: 12px;
-        border-radius: 5px;
-        font-face: "Helvetica Neue",Helvetica,Arial,sans-serif";
-        border: 2px solid #990000;
-      }
-      </style>
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      color: #990000;
+      background-color: white;
+      padding: 2px 5px;
+      font-size: 12px;
+      border-radius: 5px;
+      font-face: "Helvetica Neue",Helvetica,Arial,sans-serif";
+      border: 2px solid #990000;
     }
-  end
+    </style>
+  }
+end
 
 
 end
