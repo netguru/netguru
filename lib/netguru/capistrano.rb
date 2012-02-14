@@ -7,50 +7,88 @@ module Netguru
     def self.load_into(configuration)
       configuration.load do
 
-        set(:ng_conf) { fetch(:ng_use, [:secondcoder, :airbrake]) }  
-
-        set :rvm_ruby_string, "1.9.3-p0"
-        set :rvm_type, :system
-        set :user, application
-        set :user, "#{application}_beta" if stage == 'beta'
-        set :rails_env, stage
-        set :scm, :git
         set :repository,  "git@github.com:netguru/#{application}.git"
-        set :remote, "origin"
-        set :deploy_to, "/home/#{user}/app"
-        server webserver, :app, :web, :db, :primary => true
 
-        branches = {:production => :beta, :beta => :staging, :staging => :master}
+        set :stage, 'staging' unless exists?(:stage)
+        set(:rails_env) { fetch(:stage) }
+        set :user, application
+        set(:deploy_to) { "/home/#{fetch(:user)}/app" }
+
+        branches = {:production => :qa, :qa => :staging, :staging => :master}
         set(:branch) { branches[fetch(:stage).to_sym].to_s }
-        
+
+        role(:db, :primary => true) { fetch(:webserver) }
+        role(:app) { fetch(:webserver) }
+        role(:web) { fetch(:webserver) }
+
+        set :remote, "origin"
+        set(:current_revision)  { capture("cd #{current_path}; git rev-parse HEAD").strip }
+
+        set :scm, :git
 
         set(:latest_release)  { fetch(:current_path) }
         set(:release_path)    { fetch(:current_path) }
         set(:current_release) { fetch(:current_path) }
 
-        set(:current_revision)  { capture("cd #{current_path}; git rev-parse HEAD").strip }
+        set(:runner) { "RAILS_ENV=#{fetch(:stage)} bundle exec" }
 
-        
-        before "deploy:update_code" do
-          run("cd #{current_path} && astrails-safe -v config/safe.rb --local") if stage == 'production' or stage == 'beta'
+        namespace :deploy do
+          desc "Setup a GitHub-style deployment."
+          task :setup, :except => { :no_release => true } do
+            dirs = [deploy_to, shared_path]
+            dirs += shared_children.map { |d| File.join(shared_path, d) }
+            run "mkdir -p #{dirs.join(' ')} && chmod g+w #{dirs.join(' ')}"
+            run "ssh-keyscan github.com >> /home/#{user}/.ssh/known_hosts"
+            run "git clone #{repository} #{current_path}"
+            run "cd #{current_path} && git checkout -b #{stage} ; git merge #{remote}/#{branch}; git push #{remote} #{stage}"
+          end
+
+          task :symlink do
+          end
+
+          task :migrate do
+          end
+
+          desc "Update the deployed code"
+          task :update_code, :except => { :no_release => true } do
+            run "cd #{current_path} && git fetch #{remote} && git checkout #{stage} -f && git merge #{remote}/#{branch} && git push #{remote} #{stage}"
+          end
+
+          desc "Restarts app"
+          task :restart, :except => { :no_release => true } do
+            run "touch #{current_path}/tmp/restart.txt"
+          end
         end
 
-
-        #check secondcoder
-        before "deploy:update_code" do
-          if ng_conf.include?(:secondcoder)
+        namespace :netguru do
+          #update whenever
+          task :update_crontab, :roles => :web do
+            run "cd #{current_path} && #{runner} whenever --update-crontab #{application} --set environment=#{fetch(:stage)}" if ["qa", "production"].include? fetch(:stage)
+          end
+          #restart DJ
+          task :restart_dj do
+            run "cd #{current_path}; #{runner} script/delayed_job restart"
+          end
+          #precompile assets
+          task :precompile do
+            run "cd #{current_path} && #{runner} rake assets:precompile"
+          end
+          #backup db
+          task :backup do
+            run("cd #{current_path} && astrails-safe -v config/safe.rb --local") if stage == 'production' or stage == 'beta'
+          end
+          #notify ab
+          task :notify_airbrake do
+            run "cd #{current_path} && #{runner} rake airbrake:deploy TO=#{stage} REVISION=#{current_revision} REPO=#{repository}"
+          end
+          #ask sc
+          task :secondcoder do
             standup_response = open("http://secondcoder.com/api/netguru/#{application}/check").read
             raise "Computer says no!\n#{standup_response}" unless standup_response == "OK"
           end
+
         end
 
-
-        after "deploy:restart" do
-          if ng_conf.include?(:airbrake)
-            run "cd #{current_path} && #{runner} rake airbrake:deploy TO=#{stage} REVISION=#{current_revision} REPO=#{repository}"
-          end
-        end
-      
       end
     end
   end
