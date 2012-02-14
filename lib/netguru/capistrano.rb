@@ -7,6 +7,12 @@ module Netguru
     def self.load_into(configuration)
       configuration.load do
 
+        $:.unshift(File.expand_path('./lib', ENV['rvm_path']))
+        require 'rvm/capistrano'
+        require 'bundler/capistrano'
+        require 'open-uri'
+
+
         set :repository,  "git@github.com:netguru/#{application}.git"
 
         set :stage, 'staging' unless exists?(:stage)
@@ -61,6 +67,10 @@ module Netguru
         end
 
         namespace :netguru do
+          #restart solr server
+          task :start_solr do
+            run("cd #{current_path} && #{runner} rake sunspot:solr:start ;true")
+          end
           #update whenever
           task :update_crontab, :roles => :web do
             run "cd #{current_path} && #{runner} whenever --update-crontab #{application} --set environment=#{fetch(:stage)}" if ["qa", "production"].include? fetch(:stage)
@@ -81,6 +91,7 @@ module Netguru
           task :notify_airbrake do
             run "cd #{current_path} && #{runner} rake airbrake:deploy TO=#{stage} REVISION=#{current_revision} REPO=#{repository}"
           end
+
           #ask sc
           task :secondcoder do
             standup_response = open("http://secondcoder.com/api/netguru/#{application}/check").read
