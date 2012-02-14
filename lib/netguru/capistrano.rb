@@ -10,8 +10,8 @@ module Netguru
         $:.unshift(File.expand_path('./lib', ENV['rvm_path']))
         require 'rvm/capistrano'
         require 'bundler/capistrano'
+        require 'hipchat/capistrano'
         require 'open-uri'
-
 
         set :repository,  "git@github.com:netguru/#{application}.git"
 
@@ -37,6 +37,10 @@ module Netguru
         set(:current_release) { fetch(:current_path) }
 
         set(:runner) { "RAILS_ENV=#{fetch(:stage)} bundle exec" }
+
+        set :run_migrations, ENV['MIGRATIONS']
+        set(:run_migrate) { fetch(:stage) == 'staging' ? true : (fetch(:run_migrations) == 'true' rescue false) }
+
 
         namespace :deploy do
           desc "Setup a GitHub-style deployment."
@@ -67,6 +71,33 @@ module Netguru
         end
 
         namespace :netguru do
+          #migrate data (for data-enabled projects)
+          task :migrate_data do
+            run("cd #{current_path} && #{runner} rake db:migrate:data")
+          end
+          #cleanup compiled assets (jammit setup)
+          task :cleanup_compiled do
+            run("rm -rf #{current_path}/public/javascripts/compiled/*")
+          end
+          #abort on pending migrations (you need to do them by hand)
+          task :check_migrations do
+            run("cd #{current_path} && #{runner} rake db:abort_if_pending_migrations")
+          end
+          #symlink solr solr dirs after setup
+          task :symlink_solr do
+            run("mkdir #{shared_path}/solr")
+            run("ln -s #{shared_path}/solr #{current_path}/solr")
+          end
+          #write timestamp partial
+          task :write_timestamp do
+            puts "writing current timestamp as #{`date`}"
+            run "touch #{current_path}/app/views/layouts/_timestamp.html.haml"
+            run "date > #{current_path}/app/views/layouts/_timestamp.html.haml"
+          end
+          #finish code update
+          task :finish_update do
+            run("cd #{current_path} && #{runner} rake deploy:after_update_code")
+          end
           #restart solr server
           task :start_solr do
             run("cd #{current_path} && #{runner} rake sunspot:solr:start ;true")
