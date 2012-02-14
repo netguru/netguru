@@ -10,7 +10,8 @@ module Netguru
         $:.unshift(File.expand_path('./lib', ENV['rvm_path']))
         require 'rvm/capistrano'
         require 'bundler/capistrano'
-        # require 'hipchat/capistrano'
+
+        require 'hipchat/capistrano' if exists?(:hipchat_token)
         require 'open-uri'
 
         set :repository,  "git@github.com:netguru/#{application}.git"
