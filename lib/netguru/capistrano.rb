@@ -10,7 +10,6 @@ module Netguru
         $:.unshift(File.expand_path('./lib', ENV['rvm_path']))
         require 'rvm/capistrano'
         require 'bundler/capistrano'
-
         require 'hipchat/capistrano' if exists?(:hipchat_token)
         require 'open-uri'
 
@@ -21,8 +20,8 @@ module Netguru
         set :user, application
         set(:deploy_to) { "/home/#{fetch(:user)}/app" }
 
-        branches = {:production => :qa, :qa => :staging, :staging => :master}
-        set(:branch) { branches[fetch(:stage).to_sym].to_s }
+        branches = {:production => :beta, :beta => :staging, :staging => :master}
+        set(:branch) { branches[fetch(:stage).to_sym].to_s } unless exists?(:branch)
 
         role(:db, :primary => true) { fetch(:webserver) }
         role(:app) { fetch(:webserver) }
