@@ -3,7 +3,7 @@ class Netguru::Middleware
   def initialize(app)
     @app = app
   end
-  
+
   def call(env)
     status, headers, response = @app.call(env)
     if response.present?
@@ -28,7 +28,7 @@ class Netguru::Middleware
   end
 
   def styles
-    %{  
+    %{
       <style>
       #secondcoder {
       position: fixed;

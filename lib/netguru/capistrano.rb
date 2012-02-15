@@ -53,6 +53,12 @@ module Netguru
             run "cd #{current_path} && git checkout -b #{stage} ; git merge #{remote}/#{branch}; git push #{remote} #{stage}"
           end
 
+          task :default do
+            update_code
+            migrate
+            restart
+          end
+
           task :symlink do
           end
 
