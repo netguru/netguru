@@ -5,11 +5,15 @@ class Netguru::Middleware
   end
 
   def call(env)
-    status, headers, response = @app.call(env)
-    if response.present?
-      [status, headers, [response.body.gsub("</body>", "#{secondcoder_response}</body>")]]
+    if env["REQUEST_PATH"] =~ /\/assets\//
+      @app.call(env)
     else
-      [status, headers, [response]]
+      status, headers, response = @app.call(env)
+      if response.present?
+        [status, headers, [response.body.gsub("</body>", "#{secondcoder_response}</body>")]]
+      else
+        [status, headers, [response]]
+      end
     end
   end
 

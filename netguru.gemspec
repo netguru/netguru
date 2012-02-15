@@ -5,8 +5,8 @@ require "netguru/version"
 Gem::Specification.new do |s|
   s.name        = "netguru"
   s.version     = Netguru::VERSION
-  s.authors     = ["Marcin Stecki"]
-  s.email       = ["madsheeppl@gmail.com"]
+  s.authors     = ["Marcin Stecki", "Jacek Jakubik"]
+  s.email       = ["madsheeppl@gmail.com", "jakubik.jacek@gmail.com"]
   s.homepage    = "http://netguru.pl"
   s.summary     = "Netguru gem, taking care of our projectsdeployment strategy"
   s.description = "This is the gem we include in every netguru project to get proper deployment to staging, beta and production server"
@@ -23,4 +23,5 @@ Gem::Specification.new do |s|
   s.add_dependency "hipchat"
   s.add_dependency "rails-footnotes"
   s.add_dependency 'astrails-safe'
+  s.add_dependency "konf"
 end
