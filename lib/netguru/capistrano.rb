@@ -55,7 +55,7 @@ module Netguru
 
           task :default do
             update_code
-            migrate
+            migrate unless fetch(:skip_migrations, false)
             restart
           end
 

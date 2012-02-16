@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.authors     = ["Marcin Stecki", "Jacek Jakubik"]
   s.email       = ["madsheeppl@gmail.com", "jakubik.jacek@gmail.com"]
   s.homepage    = "http://netguru.pl"
-  s.summary     = "Netguru gem, taking care of our projectsdeployment strategy"
+  s.summary     = "Netguru gem, taking care of our projects deployment strategy"
   s.description = "This is the gem we include in every netguru project to get proper deployment to staging, beta and production server"
 
   s.files         = `git ls-files`.split("\n")
