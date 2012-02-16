@@ -113,8 +113,8 @@ module Netguru
             run("cd #{current_path} && #{runner} rake sunspot:solr:start ;true")
           end
           #update whenever
-          task :update_crontab, :roles => :web do
-            run "cd #{current_path} && #{runner} whenever --update-crontab #{application} --set environment=#{fetch(:stage)}" if ["qa", "production"].include? fetch(:stage)
+          task :update_crontab do
+            run "cd #{current_path} && #{runner} whenever --update-crontab #{application} --set environment=#{fetch(:stage)}"
           end
           #restart DJ
           task :restart_dj do
