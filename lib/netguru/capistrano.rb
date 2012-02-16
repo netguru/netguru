@@ -41,7 +41,7 @@ module Netguru
         set :run_migrations, ENV['MIGRATIONS']
         set(:run_migrate) { fetch(:stage) == 'staging' ? true : (fetch(:run_migrations) == 'true' rescue false) }
 
-
+        #basic 'github' style definition
         namespace :deploy do
           desc "Setup a GitHub-style deployment."
           task :setup, :except => { :no_release => true } do
@@ -54,7 +54,7 @@ module Netguru
           end
 
           task :default do
-            update_code
+            update
             migrate unless fetch(:skip_migrations, false)
             restart
           end
@@ -62,7 +62,14 @@ module Netguru
           task :symlink do
           end
 
+          task :update do
+            transaction do
+              update_code
+            end
+          end
+
           task :migrate do
+            run "cd #{current_path} && #{runner} rake db:migrate"
           end
 
           desc "Update the deployed code"
@@ -75,6 +82,10 @@ module Netguru
             run "touch #{current_path}/tmp/restart.txt"
           end
         end
+
+        #common tasks
+        after "deploy:update_code", "bundle:install"
+        after "deploy:update_code", "netguru:write_release"
 
         namespace :netguru do
           #migrate data (for data-enabled projects)
