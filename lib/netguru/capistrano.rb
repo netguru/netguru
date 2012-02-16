@@ -94,6 +94,10 @@ module Netguru
             run("mkdir #{shared_path}/solr")
             run("ln -s #{shared_path}/solr #{current_path}/solr")
           end
+          #write current release
+          task :write_release do
+            run("echo #{current_revision} > #{current_path}/RELEASE")
+          end
           #write timestamp partial
           task :write_timestamp do
             puts "writing current timestamp as #{`date`}"
