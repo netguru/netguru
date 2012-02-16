@@ -84,6 +84,7 @@ module Netguru
         end
 
         #common tasks
+        before "deploy:update_code", "netguru:secondcoder"
         after "deploy:update_code", "bundle:install"
         after "deploy:update_code", "netguru:write_release"
 
