@@ -21,7 +21,6 @@ Gem::Specification.new do |s|
   s.add_dependency "airbrake"
   s.add_dependency "capistrano"
   s.add_dependency "hipchat"
-  s.add_dependency "rails-footnotes"
   s.add_dependency 'astrails-safe'
   s.add_dependency "konf"
 end
