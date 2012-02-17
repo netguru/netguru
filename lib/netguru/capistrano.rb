@@ -124,6 +124,10 @@ module Netguru
           task :start_solr do
             run("cd #{current_path} && #{runner} rake sunspot:solr:start ;true")
           end
+          #rebuild sphinx server
+          task :rebuild_sphinx do
+            run("cd #{current_path} && #{runner} rake ts:config && #{runner} rake ts:rebuild")
+          end
           #update whenever
           task :update_crontab do
             run "cd #{current_path} && #{runner} whenever --update-crontab #{application} --set environment=#{fetch(:stage)}"
