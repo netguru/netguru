@@ -11,7 +11,7 @@ module Netguru
           @app.call(env)
         else
           status, headers, response = @app.call(env)
-          if response.present?
+          if response.present? && response.body.respond_to?(:gsub)
             [status, headers, [response.body.gsub("</body>", "#{secondcoder_response}</body>")]]
           else
             [status, headers, [response]]
