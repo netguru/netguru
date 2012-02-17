@@ -16,7 +16,7 @@ module Netguru
         request = Rack::Request.new env
 
         # Check code in cookie and return Rails call if is valid
-        return @app.call(env) if request.path =~ /transactions|xml|rss|attachments|update_photo/ or code_valid?(request.cookies[@options[:key].to_s].to_s)
+        return @app.call(env) if request.path =~ /transactions|xml|rss|json|attachments|update_photo/ or code_valid?(request.cookies[@options[:key].to_s].to_s)
 
         # If post method check :code_param value
         if request.post? and code_valid? request.params[@options[:code_param].to_s]
