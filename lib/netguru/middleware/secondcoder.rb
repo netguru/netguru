@@ -7,15 +7,15 @@ module Netguru
       end
 
       def call(env)
-        orginal_response = @app.call(env)
+        original_response = @app.call(env)
         if env["REQUEST_PATH"] =~ /\/assets\//
-          orginal_response
+          original_response
         else
-          status, headers, response = orginal_response
+          status, headers, response = original_response
           if response.present? && response.body.respond_to?(:gsub)
             [status, headers, [response.body.gsub("</body>", "#{secondcoder_response}</body>")]]
           else
-            orginal_response
+            original_response
           end
         end
       end
