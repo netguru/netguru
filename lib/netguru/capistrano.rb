@@ -67,6 +67,10 @@ module Netguru
               update_code
             end
           end
+          
+          task :quickfix do
+            run "cd #{current_path} && git pull #{remote} #{stage} && touch tmp/restart.txt"
+          end
 
           task :migrate do
             run "cd #{current_path} && #{runner} rake db:migrate"
