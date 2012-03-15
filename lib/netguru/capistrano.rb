@@ -15,7 +15,7 @@ module Netguru
 
         set :repository,  "git@github.com:netguru/#{application}.git"
 
-        set :stage, defer { 'staging' unless exists?(:stage) } 
+        set :stage, 'staging' unless exists?(:stage)
         set(:rails_env) { fetch(:stage) }
         set :user, application
         set(:deploy_to) { "/home/#{fetch(:user)}/app" }
