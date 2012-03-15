@@ -12,7 +12,7 @@ module Netguru
           original_response
         elsif env["HTTP_ACCEPT"] =~ /html/
           status, headers, response = original_response
-          if response.present? && response.body.respond_to?(:gsub)
+          if response.present? && response.respond_to?(:body) && response.body.respond_to?(:gsub)
             [status, headers, [response.body.gsub("</body>", "#{secondcoder_response}</body>")]]
           else
             original_response
