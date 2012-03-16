@@ -8,16 +8,10 @@ module Netguru
 
       def call(env)
         original_response = @app.call(env)
-        if env["REQUEST_PATH"] =~ /\/assets\//
-          original_response
-        elsif env["HTTP_ACCEPT"] =~ /html/
+        begin
           status, headers, response = original_response
-          if response.present? && response.respond_to?(:body) && response.body.respond_to?(:gsub)
-            [status, headers, [response.body.gsub("</body>", "#{secondcoder_response}</body>")]]
-          else
-            original_response
-          end
-        else
+          [status, headers, [response.body.gsub("</body>", "#{secondcoder_response}</body>")]]
+        rescue 
           original_response
         end
       end
