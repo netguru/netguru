@@ -4,7 +4,7 @@ namespace :netguru do
     task :"pre-commit-hook" do
       require 'open-uri'
 
-      gist_url = "https://raw.github.com/gist/2225907/8cfa3c60928153522717090c76be10ef97388485/pre-commit-hook"
+      gist_url = "https://raw.github.com/gist/2225907/pre-commit-hook"
       puts "Fetching script from #{gist_url}"
       script = open(gist_url).read
 
