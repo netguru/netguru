@@ -6,5 +6,8 @@ module Netguru
         app.config.middleware.use Netguru::Middleware::Secondcoder
       end
     end
+    rake_tasks do
+      load "tasks/netguru.rake"
+    end
   end
 end
