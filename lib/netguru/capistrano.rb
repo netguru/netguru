@@ -41,6 +41,8 @@ module Netguru
         set :run_migrations, ENV['MIGRATIONS']
         set(:run_migrate) { fetch(:stage) == 'staging' ? true : (fetch(:run_migrations) == 'true' rescue false) }
 
+        set :date_format, ''
+
         #basic 'github' style definition
         namespace :deploy do
           desc "Setup a GitHub-style deployment."
@@ -114,12 +116,18 @@ module Netguru
           task :write_release do
             run("echo #{current_revision} > #{current_path}/RELEASE")
           end
-          #write timestamp partial
+
+          # write timestamp partial
+          # override date_format variable to get different date format
+          #
+          # e.g. 
+          # set :date_format, "+'%d-%m-%y %R'"
+          #
           task :write_timestamp do
-            puts "writing current timestamp as #{`date`}"
             run "touch #{current_path}/app/views/layouts/_timestamp.html.haml"
-            run "date > #{current_path}/app/views/layouts/_timestamp.html.haml"
+            run "date #{date_format} > #{current_path}/app/views/layouts/_timestamp.html.haml".split.join(' ')
           end
+
           #finish code update
           task :finish_update do
             run("cd #{current_path} && #{runner} rake deploy:after_update_code")
