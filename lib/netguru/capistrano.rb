@@ -168,6 +168,12 @@ module Netguru
           end
 
         end
+        
+        namespace :log do
+          task :default do
+            run "tail -f #{current_path}/log/#{stage}.log"
+          end
+        end
 
       end
     end
