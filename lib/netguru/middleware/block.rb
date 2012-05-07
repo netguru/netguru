@@ -15,24 +15,46 @@ module Netguru
       def call env
         request = Rack::Request.new env
 
-        # Check code in cookie and return Rails call if is valid
-        return @app.call(env) if request.path =~ /transactions|xml|rss|json|attachments|update_photo/ or code_valid?(request.cookies[@options[:key].to_s].to_s)
+        bv = BlockValidator.new(@options, request)
+        return @app.call(env) if bv.valid?
 
         # If post method check :code_param value
-        if request.post? and code_valid? request.params[@options[:code_param].to_s]
+        if request.post? and bv.valid_code?(request.params[@options[:code_param].to_s]) 
           [301, {'Location' => request.path, 'Set-Cookie' => "#{@options[:key]}=#{request.params[@options[:code_param].to_s]}; domain=#{'.' + request.host}; expires=30-Dec-2039 23:59:59 GMT"}, ''] # Redirect if code is valid
         else
           [200, {'Content-Type' => 'text/html'}, [
             'Password: <form action="" method="post"><input type="password" name="code" /><input type="submit" /></form>'
-            ]]
+          ]]
+        end
+      end
+    end
+
+    class BlockValidator
+      attr_accessor :options, :request
+
+      def initialize options, request
+        @options = options
+        @request = request
+      end
+
+      def valid?
+        valid_path? || valid_code?(@request.cookies[@options[:key].to_s]) || valid_ip?
+      end
+
+      def valid_ip?
+        unless @options[:ip_whitelist].nil?
+          @options[:ip_whitelist].include? @request.ip.to_s
         end
       end
 
-      private
-      # Validate code
+      def valid_path?
+        @request.path =~ /transactions|xml|rss|json|attachments|update_photo/
+      end
 
-      def code_valid? code
-        @options[:auth_codes].include? code.to_s
+      def valid_code? code
+        unless @options[:auth_codes].nil?
+          @options[:auth_codes].include? code
+        end
       end
     end
   end
