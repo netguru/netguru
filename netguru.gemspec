@@ -23,4 +23,5 @@ Gem::Specification.new do |s|
   s.add_dependency "hipchat"
   s.add_dependency 'astrails-safe'
   s.add_dependency "konf"
+  s.add_dependency "rvm-capistrano"
 end

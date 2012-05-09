@@ -7,7 +7,6 @@ module Netguru
     def self.load_into(configuration)
       configuration.load do
 
-        $:.unshift(File.expand_path('./lib', ENV['rvm_path']))
         require 'rvm/capistrano'
         require 'bundler/capistrano'
         require 'hipchat/capistrano' if exists?(:hipchat_token)
@@ -19,6 +18,7 @@ module Netguru
         set(:rails_env) { fetch(:stage) }
         set :user, application
         set(:deploy_to) { "/home/#{fetch(:user)}/app" }
+        set :rvm_type, :system
 
         branches = {:production => :beta, :beta => :staging, :staging => :master}
         set(:branch) { branches[fetch(:stage).to_sym].to_s } unless exists?(:branch)
@@ -69,7 +69,7 @@ module Netguru
               update_code
             end
           end
-          
+
           task :quickfix do
             run "cd #{current_path} && git pull #{remote} #{stage} && touch tmp/restart.txt"
           end
@@ -120,7 +120,7 @@ module Netguru
           # write timestamp partial
           # override date_format variable to get different date format
           #
-          # e.g. 
+          # e.g.
           # set :date_format, "+'%d-%m-%y %R'"
           #
           task :write_timestamp do
@@ -168,7 +168,7 @@ module Netguru
           end
 
         end
-        
+
         namespace :log do
           task :default do
             run "tail -f #{current_path}/log/#{stage}.log"
