@@ -74,6 +74,12 @@ module Netguru
             run "cd #{current_path} && git pull #{remote} #{stage} && touch tmp/restart.txt"
           end
 
+          desc "revert your stage branch to specified timestamp and restart app (cap stage deploy:revert -s to=201205121417)"
+          task :revert do
+            raise "specify the revision you want to rollback to - cap stage deploy:revert -s to=201205121417" unless defined?(to)
+            run "cd #{current_path} && get fetch --tags #{remote} && git checkout #{stage} -f && git reset --hard #{to}-#{stage} && git push #{remote} #{stage}"
+          end
+
           task :migrate do
             run "cd #{current_path} && #{runner} rake db:migrate"
           end
@@ -93,6 +99,7 @@ module Netguru
         before "deploy:update_code", "netguru:secondcoder"
         after "deploy:update_code", "bundle:install"
         after "deploy:update_code", "netguru:write_release"
+        after "deploy:revert", "deploy:restart"
 
         namespace :netguru do
           #migrate data (for data-enabled projects)
@@ -167,6 +174,10 @@ module Netguru
             raise "Computer says no!\n#{standup_response}" unless standup_response == "OK"
           end
 
+          #tag release with timestamp, e.g. 201206161435-production
+          task :tag_release do
+            run "cd #{current_path} && git tag #{Time.now.utc.strftime("%Y%m%d%H%M%S")}-#{stage} && git push --tags"
+          end
         end
 
         namespace :log do
