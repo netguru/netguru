@@ -101,6 +101,11 @@ module Netguru
         after "deploy:update_code", "netguru:write_release"
         after "deploy:revert", "deploy:restart"
 
+        # tag production releases by default
+        after "production" do
+          after "deploy:update_code", "netguru:tag_release"
+        end
+
         namespace :netguru do
           #migrate data (for data-enabled projects)
           task :migrate_data do

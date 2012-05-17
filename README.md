@@ -10,12 +10,14 @@ Tags releases with a timestamp and environment, e.g. 201205161559-production
 Usage:
 `after('deploy:update_code', 'netguru:tag_release')`
 
+(this is enabled for production stage by default)
+
 ### deploy:revert
 
 Rewinds your stage branch to specified timestamp and restarts app.
 
 Usage:
-`cap production deploy:revert to=201205161559`
+`cap production deploy:revert -s to=201205161559`
 
 ## generators
 
