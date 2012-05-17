@@ -77,7 +77,7 @@ module Netguru
           desc "revert your stage branch to specified timestamp and restart app (cap stage deploy:revert -s to=201205121417)"
           task :revert do
             raise "specify the revision you want to rollback to - cap stage deploy:revert -s to=201205121417" unless configuration[:to]
-            run "cd #{current_path} && get fetch --tags #{remote} && git checkout #{stage} -f && git reset --hard #{to}-#{stage} && git push #{remote} #{stage}"
+            run "cd #{current_path} && git fetch --tags #{remote} && git checkout #{stage} -f && git reset --hard #{to}-#{stage} && git push --force #{remote} #{stage}"
           end
 
           task :migrate do
