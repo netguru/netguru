@@ -17,7 +17,7 @@ Usage:
 Rewinds your stage branch to specified timestamp and restarts app.
 
 Usage:
-`cap production deploy:revert to=201205161559`
+`cap production deploy:revert -s to=201205161559`
 
 ## generators
 
