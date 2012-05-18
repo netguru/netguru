@@ -102,9 +102,7 @@ module Netguru
         after "deploy:revert", "deploy:restart"
 
         # tag production releases by default
-        after "production" do
-          after "deploy:update_code", "netguru:tag_release"
-        end
+        after "production", "netguru:set_tagging"
 
         namespace :netguru do
           #migrate data (for data-enabled projects)
@@ -182,6 +180,10 @@ module Netguru
           #tag release with timestamp, e.g. 201206161435-production
           task :tag_release do
             run "cd #{current_path} && git tag #{Time.now.utc.strftime("%Y%m%d%H%M%S")}-#{stage} && git push --tags"
+          end
+
+          task :set_tagging do
+            after "deploy:update_code", "netguru:tag_release"
           end
         end
 
