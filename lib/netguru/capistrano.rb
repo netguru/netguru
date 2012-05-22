@@ -38,9 +38,6 @@ module Netguru
 
         set(:runner) { "RAILS_ENV=#{fetch(:stage)} bundle exec" }
 
-        set :run_migrations, ENV['MIGRATIONS']
-        set(:run_migrate) { fetch(:stage) == 'staging' ? true : (fetch(:run_migrations) == 'true' rescue false) }
-
         set :date_format, ''
 
         #basic 'github' style definition
