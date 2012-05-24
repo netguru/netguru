@@ -177,8 +177,12 @@ module Netguru
             raise "Computer says no!\n#{standup_response}" unless standup_response == "OK"
           end
 
-          #tag release with timestamp, e.g. 201206161435-production
+          # tag release with timestamp, e.g. 201206161435-production
+          # roles are not accepted in callbacks in capistrano
           task :tag_release do
+            tag_release_web
+          end
+          task :tag_release_web, :roles => :web do
             run "cd #{current_path} && git tag #{Time.now.utc.strftime("%Y%m%d%H%M%S")}-#{stage} && git push --tags"
           end
 
