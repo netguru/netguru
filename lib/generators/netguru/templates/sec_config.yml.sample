@@ -1,0 +1,6 @@
+defaults: &defaults
+  some_secret_config: false
+production:
+  <<: *defaults
+beta:
+  <<: *defaults
