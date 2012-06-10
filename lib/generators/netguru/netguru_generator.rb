@@ -22,7 +22,7 @@ class NetguruGenerator < Rails::Generators::Base
   end
 
   def install_capistrano
-    template 'deploy.rb', "config/deploy.rb"
+    template 'deploy.rb.erb', "config/deploy.rb"
     template 'Capfile', 'Capfile'
   end
 
