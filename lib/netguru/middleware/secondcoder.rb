@@ -23,7 +23,7 @@ module Netguru
       end
 
       def application_name
-        Rails.application.class.parent_name.downcase
+        Netguru.application_name
       end
 
       def secondcoder_response

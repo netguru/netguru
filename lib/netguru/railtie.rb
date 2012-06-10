@@ -1,5 +1,10 @@
 require 'netguru/middleware/secondcoder'
 module Netguru
+
+  def self.application_name
+    Rails.application.class.parent_name.downcase
+  end
+
   class Railtie < Rails::Railtie
     if Rails.env.development?
       initializer "netguru.insert_middleware" do |app|
