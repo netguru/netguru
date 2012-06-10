@@ -10,9 +10,13 @@ class NetguruGenerator < Rails::Generators::Base
     install_nginx
     install_capistrano
     install_konf
+    install_rvm
   end
 
   private
+  def install_rvm
+    template 'rvmrc', '.rvmrc'
+  end
 
   def install_konf
     template 'preinitializer.rb', 'config/preinitializer.rb'
