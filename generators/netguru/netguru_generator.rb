@@ -1,9 +1,9 @@
 require 'rails/generators'
 
-class AirbrakeGenerator < Rails::Generators::Base
+class NetguruGenerator < Rails::Generators::Base
 
   def self.source_root
-    @_airbrake_source_root ||= File.expand_path("../../../../../generators/netguru/templates", __FILE__)
+    @_netguru_source_root ||= File.expand_path("../../../../../generators/netguru/templates", __FILE__)
   end
 
   def install
