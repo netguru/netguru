@@ -56,6 +56,9 @@ module Netguru
             update
             migrate unless fetch(:skip_migrations, false)
             restart
+            on_rollback do
+              set :hipchat_color, 'red'
+            end
           end
 
           task :symlink do
