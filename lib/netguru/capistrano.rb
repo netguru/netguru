@@ -1,7 +1,7 @@
 # Defines netguru custom task to deploy project.
 require 'open-uri'
 require 'capistrano'
-
+require 'json'
 module Netguru
   module Capistrano
     def self.load_into(configuration)
@@ -173,8 +173,19 @@ module Netguru
 
           #ask sc
           task :secondcoder do
-            standup_response = open("http://secondcoder.com/api/netguru/#{application}/check").read
-            raise "Computer says no!\n#{standup_response}" unless standup_response == "OK"
+
+              begin
+                standup_response = JSON.parse(open("http://dashboard.netguru.pl/netguru/#{application}/commits/check.json").read)
+              rescue => e
+                raise "[review] Review process was not setup properly - #{e}"
+              end
+
+              if standup_response['commits'] and standup_response['commits']['rejected'].to_i > 0
+                raise "[review] Computer says no! \n[review] There are #{standup_response['commits']['rejected']} rejected commits - #{standup_response['commits']['url']}"
+              else
+                puts "[review] Pending #{standup_response['commits']['rejected']}, passed #{standup_response['commits']['rejected']}"
+              end
+
           end
 
           # tag release with timestamp, e.g. 201206161435-production
