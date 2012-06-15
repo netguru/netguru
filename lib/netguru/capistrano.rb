@@ -200,6 +200,16 @@ module Netguru
           task :set_tagging do
             after "deploy:update_code", "netguru:tag_release"
           end
+
+          # tasks for start/stop faye server
+          task :start_faye do
+            run "bundle exec rackup private_pub.ru -s thin -E production --pid #{current_path}/tmp/pids/faye.pid"
+          end
+
+          task :stop_faye do
+            run 'kill -9 `cat #{current_path}/tmp/pids/faye.pid`'
+          end
+
         end
 
         namespace :log do
