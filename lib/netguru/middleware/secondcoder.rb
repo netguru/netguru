@@ -27,7 +27,18 @@ module Netguru
       end
 
       def secondcoder_response
-        response = (timeout(0.5){ open("http://secondcoder.com/api/netguru/#{application_name}/check").read } rescue "To slow to access secondcoder.")
+          response = begin
+            timeout(0.5) do
+              res = JSON.parse(open("http://dashboard.netguru.pl/netguru/#{application_name}/commits/check.json").read)
+              if res['commits'] and res['commits']['rejected'].to_i > 0
+                "There are #{res['commits']['rejected']} rejected commits - #{res['commits']['url']}"
+              else
+                "Pending #{res['commits']['rejected']}, passed #{res['commits']['rejected']}"
+              end
+            end
+          rescue
+            "Can't access review info."
+          end
         %{
           <div id='secondcoder'>
           #{response}
