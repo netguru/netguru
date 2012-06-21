@@ -1,19 +1,20 @@
 require 'open-uri'
 module Netguru
   module Middleware
-    class Secondcoder
+    class Review
       def initialize(app)
         @app = app
       end
 
       def call(env)
         original_response = @app.call(env)
-        if env["REQUEST_PATH"] =~ /\/assets\//
+        path = env["REQUEST_PATH"] || env["PATH_INFO"] #legacy issues
+        if path =~ /\/assets\// or path =~ /\/.+\..+/ #igonore formatted requests like users.json etc
           original_response
         elsif env["HTTP_ACCEPT"] =~ /html/
           status, headers, response = original_response
           if response.present? && response.respond_to?(:body) && response.body.respond_to?(:gsub)
-            [status, headers, [response.body.gsub("</body>", "#{secondcoder_response}</body>")]]
+            [status, headers, [response.body.gsub("</body>", "#{review_response}</body>")]]
           else
             original_response
           end
@@ -26,7 +27,7 @@ module Netguru
         Netguru.application_name
       end
 
-      def secondcoder_response
+      def review_response
           response = begin
             timeout(0.5) do
               res = JSON.parse(open("http://dashboard.netguru.pl/netguru/#{application_name}/commits/check.json").read)
@@ -40,7 +41,7 @@ module Netguru
             "Can't access review info."
           end
         %{
-          <div id='secondcoder'>
+          <div id='review'>
           #{response}
           </div>
           #{styles}
@@ -50,7 +51,7 @@ module Netguru
       def styles
         %{
           <style>
-          #secondcoder {
+          #review {
           position: fixed;
           top: 10px;
           right: 10px;

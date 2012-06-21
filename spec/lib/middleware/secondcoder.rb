@@ -1,8 +1,8 @@
 require 'spec_helper'
 require 'netguru'
-require 'netguru/middleware/secondcoder'
-describe Netguru::Middleware::Secondcoder do
+require 'netguru/middleware/review'
+describe Netguru::Middleware::Review do
   it "should be a class" do
-    Netguru::Middleware::Secondcoder.should be_a Class
+    Netguru::Middleware::Review.should be_a Class
   end
 end

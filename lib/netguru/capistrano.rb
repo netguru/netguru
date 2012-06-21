@@ -96,7 +96,7 @@ module Netguru
         end
 
         #common tasks
-        before "deploy:update_code", "netguru:secondcoder"
+        before "deploy:update_code", "netguru:review"
         after "deploy:update_code", "bundle:install"
         after "deploy:update_code", "netguru:write_release"
         after "deploy:revert", "deploy:restart"
@@ -172,7 +172,7 @@ module Netguru
           end
 
           #ask sc
-          task :secondcoder do
+          task :review do
 
               begin
                 standup_response = JSON.parse(open("http://dashboard.netguru.pl/netguru/#{application}/commits/check.json").read)

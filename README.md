@@ -32,6 +32,6 @@ You don't usually remove this hook, but when you do...
 `rake netguru:uninstall:precommit`
 
 ## TO DO:
-* specs for secondcoder response check during reponse
+* specs for review response check during reponse
 * specs for sc middleware
 * use [Konf gem](https://github.com/GBH/konf)

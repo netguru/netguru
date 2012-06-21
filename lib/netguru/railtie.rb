@@ -1,4 +1,4 @@
-require 'netguru/middleware/secondcoder'
+require 'netguru/middleware/review'
 module Netguru
 
   def self.application_name
@@ -8,7 +8,7 @@ module Netguru
   class Railtie < Rails::Railtie
     if Rails.env.development?
       initializer "netguru.insert_middleware" do |app|
-        app.config.middleware.use Netguru::Middleware::Secondcoder
+        app.config.middleware.use Netguru::Middleware::Review
       end
     end
     rake_tasks do
