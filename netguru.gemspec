@@ -5,11 +5,11 @@ require "netguru/version"
 Gem::Specification.new do |s|
   s.name        = "netguru"
   s.version     = Netguru::VERSION
-  s.authors     = ["Marcin Stecki", "Jacek Jakubik"]
-  s.email       = ["madsheeppl@gmail.com", "jakubik.jacek@gmail.com"]
+  s.authors     = ["Marcin Stecki", "Jacek Jakubik", "Tomasz Pewinski", "Wiktor Schmidt", "Adam Nowak"]
+  s.email       = ["madsheeppl@gmail.com", "jakubik.jacek@gmail.com", "pewniak747@gmail.com", "wiktorschmidt@gmail.com", "adam.nowak@netguru.pl"]
   s.homepage    = "http://netguru.pl"
-  s.summary     = "Netguru gem, taking care of our projects deployment strategy"
-  s.description = "This is the gem we include in every netguru project to get proper deployment to staging, beta and production server"
+  s.summary     = "Netguru gem, taking care of our projects deployment strategy and stuff."
+  s.description = "This is the gem we include in every netguru project, to get proper deployment to staging, beta and production server."
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
@@ -20,7 +20,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency "rspec"
   s.add_dependency "airbrake"
   s.add_dependency "capistrano"
-  s.add_dependency "hipchat"
   s.add_dependency 'astrails-safe'
   s.add_dependency "konf"
   s.add_dependency "rvm-capistrano"

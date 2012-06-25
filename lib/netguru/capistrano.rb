@@ -9,7 +9,11 @@ module Netguru
 
         require 'rvm/capistrano'
         require 'bundler/capistrano'
-        require 'hipchat/capistrano' if exists?(:hipchat_token)
+        begin
+          require 'hipchat/capistrano' if exists?(:hipchat_token)
+        rescue LoadError
+          raise "\n\nADD 'gem \"hipchat\", git: \"git://github.com/madsheep/hipchat.git\"' to your Gemfile and run `bundle install`\n\n"
+        end
         require 'open-uri'
 
         set :repository,  "git@github.com:netguru/#{application}.git"
