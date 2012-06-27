@@ -21,6 +21,13 @@ describe Netguru::Middleware::BlockValidator do
   end
 
   describe "valid path" do
+    it "be true when path is whitelisted" do
+      options[:path_whitelist] = /secret\/gate/
+      request = mock "Request", path: "secret/gate"
+      bv = Netguru::Middleware::BlockValidator.new(options, request)
+      bv.valid_path?.should be_true
+    end
+
     it "be true when path looks like asset" do
       %w[transactions xml rss json attachments update_photo].each do |asset|
         request = mock "Request", path: asset 
@@ -31,7 +38,7 @@ describe Netguru::Middleware::BlockValidator do
 
     it "be false when path doesn't looks like asset" do
       %w[products orders users].each do |asset|
-        request = mock "Request", path: asset 
+        request = mock "Request", path: asset
         bv = Netguru::Middleware::BlockValidator.new(options, request)
         bv.valid_path?.should be_false
       end
