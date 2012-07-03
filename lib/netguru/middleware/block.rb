@@ -47,7 +47,7 @@ module Netguru
       end
 
       def valid_path?
-        @request.path =~ /transactions|xml|rss|json|attachments|update_photo/
+        @request.path =~ /transactions|xml|rss|json|attachments|update_photo/ || @request.path =~ @options[:path_whitelist]
       end
 
       def valid_code? code
