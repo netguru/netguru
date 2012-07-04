@@ -115,7 +115,7 @@ module Netguru
           desc "Sends hipchat notifcation on fail"
           task :set_hipchat do
             set :hipchat_client, HipChat::Client.new(hipchat_token)
-            set :human, ENV['HIPCHAT_USER'] ||  fetch(:hipchat_user, nil) || (`git config user.name` rescue nil).presence || `whoami` || "Someone"
+            set :human, ENV['HIPCHAT_USER'] ||  fetch(:hipchat_user, nil) || `whoami`
             on_rollback do
               hipchat_client[hipchat_room_name].send("Deploy", "#{human} cancelled deployment of #{application} to #{stage}.", color: :red, notify: true)
             end
