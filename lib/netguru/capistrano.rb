@@ -94,6 +94,24 @@ module Netguru
             run "touch #{current_path}/tmp/restart.txt"
           end
 
+        end
+
+        #common tasks
+
+        before "deploy:update_code", "netguru:set_hipchat"
+        after "deploy", "netguru:notify_hipchat"
+
+        before "deploy:update_code", "netguru:review"
+        after "deploy:update_code", "bundle:install"
+        after "deploy:update_code", "netguru:write_release"
+        after "deploy:revert", "deploy:restart"
+
+
+        # tag production releases by default
+        after "production", "netguru:set_tagging"
+
+        namespace :netguru do
+
           desc "Sends hipchat notifcation on fail"
           task :set_hipchat do
             set :hipchat_client, HipChat::Client.new(hipchat_token)
@@ -107,23 +125,7 @@ module Netguru
           task :notify_hipchat do
             hipchat_client[hipchat_room_name].send("Deploy", "#{human} finished deployment of #{application} to #{stage}.", color: :green, notify: false)
           end
-        end
 
-        #common tasks
-
-        before "deploy", "netguru:set_hipchat"
-        after "deploy", "netguru:notify_hipchat"
-
-        before "deploy:update_code", "netguru:review"
-        after "deploy:update_code", "bundle:install"
-        after "deploy:update_code", "netguru:write_release"
-        after "deploy:revert", "deploy:restart"
-
-
-        # tag production releases by default
-        after "production", "netguru:set_tagging"
-
-        namespace :netguru do
           #migrate data (for data-enabled projects)
           task :migrate_data do
             run("cd #{current_path} && #{runner} rake db:migrate:data")
