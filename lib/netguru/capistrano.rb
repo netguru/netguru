@@ -2,6 +2,7 @@
 require 'open-uri'
 require 'capistrano'
 require 'json'
+require 'hipchat'
 module Netguru
   module Capistrano
     def self.load_into(configuration)
@@ -9,11 +10,6 @@ module Netguru
 
         require 'rvm/capistrano'
         require 'bundler/capistrano'
-        begin
-          require 'hipchat/capistrano' if exists?(:hipchat_token)
-        rescue LoadError
-          raise "\n\nADD 'gem \"hipchat\", git: \"git://github.com/madsheep/hipchat.git\"' to your Gemfile and run `bundle install`\n\n"
-        end
         require 'open-uri'
 
         set :repository,  "git@github.com:netguru/#{application}.git"
@@ -97,13 +93,32 @@ module Netguru
           task :restart, :except => { :no_release => true } do
             run "touch #{current_path}/tmp/restart.txt"
           end
+
+          desc "Sends hipchat notifcation on fail"
+          task :set_hipchat do
+            set :hipchat_client, HipChat::Client.new(hipchat_token)
+            set :human, ENV['HIPCHAT_USER'] || (`git config user.name` rescue nil) || "Someone"
+            on_rollback do
+              hipchat_client[hipchat_room_name].send("Deploy", "#{human} cancelled deployment of #{application} to #{stage}.", color: :red, notify: true)
+            end
+          end
+
+          desc "Sends hipchat notifcation on success"
+          task :notify_hipchat do
+            hipchat_client[hipchat_room_name].send("Deploy", "#{human} finished deployment of #{application} to #{stage}.", color: :green, notify: false)
+          end
         end
 
         #common tasks
+
+        before "deploy", "netguru:set_hipchat"
+        after "deploy", "netguru:notify_hipchat"
+
         before "deploy:update_code", "netguru:review"
         after "deploy:update_code", "bundle:install"
         after "deploy:update_code", "netguru:write_release"
         after "deploy:revert", "deploy:restart"
+
 
         # tag production releases by default
         after "production", "netguru:set_tagging"
@@ -178,17 +193,17 @@ module Netguru
           #ask sc
           task :review do
 
-              begin
-                standup_response = JSON.parse(open("http://dashboard.netguru.pl/netguru/#{application}/commits/check.json").read)
-              rescue => e
-                raise "[review] Review process was not setup properly - #{e}"
-              end
+            begin
+              standup_response = JSON.parse(open("http://dashboard.netguru.pl/netguru/#{application}/commits/check.json").read)
+            rescue => e
+              raise "[review] Review process was not setup properly - #{e}"
+            end
 
-              if standup_response['commits'] and standup_response['commits']['rejected'].to_i > 0
-                raise "[review] Computer says no! \n[review] There are #{standup_response['commits']['rejected']} rejected commits - #{standup_response['commits']['url']}"
-              else
-                puts "[review] Pending #{standup_response['commits']['rejected']}, passed #{standup_response['commits']['rejected']}"
-              end
+            if standup_response['commits'] and standup_response['commits']['rejected'].to_i > 0
+              raise "[review] Computer says no! \n[review] There are #{standup_response['commits']['rejected']} rejected commits - #{standup_response['commits']['url']}"
+            else
+              puts "[review] Pending #{standup_response['commits']['pending']}, passed #{standup_response['commits']['passed']}"
+            end
 
           end
 
