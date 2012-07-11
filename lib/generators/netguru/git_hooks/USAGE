@@ -1,0 +1,8 @@
+Description:
+    Git hooks for your project
+
+Example:
+    rails generate netguru:git_hooks
+
+    This will create:
+        .git/hooks/post-merge
