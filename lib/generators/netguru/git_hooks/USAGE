@@ -6,4 +6,4 @@ Example:
 
     This will create:
         .git/hooks/post-merge
-        .git/hooks/pre-commit
+        .git/hooks/prepare-commit-msg
