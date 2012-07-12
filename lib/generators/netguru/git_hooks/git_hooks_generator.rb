@@ -3,7 +3,7 @@ class Netguru::GitHooksGenerator < Rails::Generators::Base
 
   def install_hooks
     install_post_merge_hook
-    install_pre_commit_hook
+    install_prepare_commit_msg
   end
 
   private
@@ -13,9 +13,9 @@ class Netguru::GitHooksGenerator < Rails::Generators::Base
     chmod '.git/hooks/post-merge', 0755
   end
 
-  def install_pre_commit_hook
-    template 'pre-commit.sh', '.git/hooks/pre-commit'
-    chmod '.git/hooks/pre-commit', 0755
+  def install_prepare_commit_msg
+    template 'prepare-commit-msg.sh', '.git/hooks/prepare-commit-msg'
+    chmod '.git/hooks/prepare-commit-msg', 0755
   end
 
 end
