@@ -6,3 +6,4 @@ Example:
 
     This will create:
         .git/hooks/post-merge
+        .git/hooks/pre-commit
