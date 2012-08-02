@@ -187,6 +187,10 @@ module Netguru
           task :backup do
             run("cd #{current_path} && astrails-safe -v config/safe.rb --local") if stage == 'production' or stage == 'beta'
           end
+          #backup mongo db
+          task :mongo_backup do
+            run("cd #{current_path} && #{runner} rake mongo_backup:default")
+          end
           #notify ab
           task :notify_airbrake do
             run "cd #{current_path} && #{runner} rake airbrake:deploy TO=#{stage} REVISION=#{current_revision} REPO=#{repository}"

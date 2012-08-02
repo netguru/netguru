@@ -1,0 +1,32 @@
+Backup::Model.new(:mongo_backup, 'MongoDB backup') do
+
+  split_into_chunks_of 1000
+
+  database MongoDB do |database|
+    database.name   = "<%= Netguru.application_name %>_production"
+    database.host   = "localhost"
+  end
+
+  store_with Local do |local|
+    local.path = "/home/<%= Netguru.application_name %>/mongodumps/"
+    local.keep = 5
+  end
+
+  compress_with Gzip do |compression|
+    compression.level = 6
+  end
+
+  notify_by Hipchat do |hipchat|
+    hipchat.on_success = true
+    hipchat.on_warning = true
+    hipchat.on_failure = true
+
+    hipchat.success_color = 'green'
+    hipchat.warning_color = 'yellow'
+    hipchat.failure_color = 'red'
+
+    hipchat.token = "hipchat token goes here"
+    hipchat.from = 'DB Backup'
+    hipchat.rooms_notified = ['hipchat room name goes here']
+  end
+end
