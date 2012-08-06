@@ -13,6 +13,8 @@ class NetguruGenerator < Rails::Generators::Base
     install_rvm
     install_pow
   end
+  
+  private 
 
   def install_pow
     template 'powrc', '.powrc'
