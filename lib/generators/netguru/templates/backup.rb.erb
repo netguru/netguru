@@ -1,0 +1,19 @@
+Backup::Model.new(:mongo_backup, 'MongoDB backup') do
+
+  split_into_chunks_of 1000
+
+  database MongoDB do |database|
+    database.name   = "<%= Netguru.application_name %>_production"
+    database.host   = "localhost"
+  end
+
+  store_with Local do |local|
+    local.path = "/home/<%= Netguru.application_name %>/mongodumps/"
+    local.keep = 5
+  end
+
+  compress_with Gzip do |compression|
+    compression.level = 6
+  end
+
+end
