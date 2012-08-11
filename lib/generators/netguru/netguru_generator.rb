@@ -13,8 +13,8 @@ class NetguruGenerator < Rails::Generators::Base
     install_rvm
     install_pow
   end
-
-  private
+  
+  private 
 
   def install_pow
     template 'powrc', '.powrc'
@@ -38,6 +38,12 @@ class NetguruGenerator < Rails::Generators::Base
 
   def install_nginx
     template 'nginx.staging.conf', "config/nginx.staging.#{Netguru.application_name}.conf"
+  end
+
+  def install_backup_mongo
+    template "backup.rb.erb", "config/backup.rb"
+    template "backup.rake", "lib/tasks/backup.rake"
+    template "schedule.rb.erb", "config/schedule.rb"
   end
 
 end
