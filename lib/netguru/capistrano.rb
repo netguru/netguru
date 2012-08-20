@@ -200,7 +200,7 @@ module Netguru
           task :review do
 
             begin
-              standup_response = JSON.parse(open("http://dashboard.netguru.pl/netguru/#{application}/commits/check.json").read)
+              standup_response = JSON.parse(open("http://dashboard.netguru.pl/projects/#{application}/commits/check.json").read)
             rescue => e
               raise "[review] Review process was not setup properly - #{e}"
             end
