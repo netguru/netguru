@@ -177,7 +177,8 @@ module Netguru
           end
           #restart DJ
           task :restart_dj do
-            run "cd #{current_path}; #{runner} script/delayed_job restart"
+            set :workers, fetch(:dj_workers, 1)
+            run "cd #{current_path}; #{runner} script/delayed_job restart -n #{workers}"
           end
           #precompile assets
           task :precompile do
