@@ -21,15 +21,13 @@ Usage:
 
 ## generators
 
-### Pre-commit hook for git
+### Hooks for git (`git_hooks`)
 
-It checks current changes for unwanted stuff (aka *badcode*) and prevents from including it into repository).
+  * `post-merge` - show message if changes in `Gemfile`/`Gemfile.lock` or `schema.rb` have been detected so user can spot it and run `bundle`/`rake db:migrate`
 
-In order to install, run this command in the main directory of your app:
-`rake netguru:install:precommit`
+In order to install:
 
-You don't usually remove this hook, but when you do...
-`rake netguru:uninstall:precommit`
+    rails generate netguru:git_hooks
 
 ## TO DO:
 * specs for review response check during reponse

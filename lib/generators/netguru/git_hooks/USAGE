@@ -1,5 +1,6 @@
 Description:
     Git hooks for your project
+    * post-merge - show message if changes in Gemfile/Gemfile.lock or schema.rb have been detected so user can spot it and run `bundle`/`rake db:migrate`
 
 Example:
     rails generate netguru:git_hooks
