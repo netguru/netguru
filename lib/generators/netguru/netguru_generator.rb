@@ -12,9 +12,14 @@ class NetguruGenerator < Rails::Generators::Base
     install_konf
     install_rvm
     install_pow
+    install_bullet
   end
-  
-  private 
+
+  private
+
+  def install_bullet
+    template 'bullet.rb', 'config/initializers/bullet.rb'
+  end
 
   def install_pow
     template 'powrc', '.powrc'
