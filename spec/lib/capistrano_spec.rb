@@ -1,13 +1,18 @@
 require 'spec_helper'
 
-
 describe Netguru::Capistrano do
-
   before do
     @configuration = Capistrano::Configuration.new
     @configuration.extend(Capistrano::Spec::ConfigurationExt)
     @configuration.set :current_path, "/test"
     Netguru::Capistrano.load_into(@configuration)
+  end
+
+  it "initialize Airbrake with variable from ENV" do
+    ENV['AIRBRAKE_API_KEY'] = "secret"
+    airbrake = stub "Airbrake", exec_capistrano_task: true
+    Netguru::Airbrake.should_receive(:new).with("secret").and_return airbrake
+    @configuration.find_and_execute_task('netguru:airbrake')
   end
 
   it "define write_timestamp task" do
