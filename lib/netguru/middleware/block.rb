@@ -22,10 +22,18 @@ module Netguru
         if request.post? and bv.valid_code?(request.params[@options[:code_param].to_s]) 
           [301, {'Location' => request.path, 'Set-Cookie' => "#{@options[:key]}=#{request.params[@options[:code_param].to_s]}; domain=#{'.' + request.host}; expires=30-Dec-2039 23:59:59 GMT"}, ['']] # Redirect if code is valid
         else
-          [200, {'Content-Type' => 'text/html'}, [
-            'Password: <form action="" method="post"><input type="password" name="code" /><input type="submit" /></form>'
-          ]]
+          success_rack_response
         end
+      end
+
+      def success_rack_response
+        [200, {'Content-Type' => 'text/html'}, [read_success_view]]
+      end
+
+      private
+
+      def read_success_view
+        @success_view ||= File.open(File.join(File.dirname(__FILE__),  "..", "views", "block_middleware.html")).read
       end
     end
 

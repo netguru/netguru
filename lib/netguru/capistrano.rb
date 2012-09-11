@@ -102,6 +102,7 @@ module Netguru
         after "deploy", "netguru:notify_hipchat"
 
         before "deploy:update_code", "netguru:review"
+        after "deploy:update_code", "netguru:check_airbrake"
         after "deploy:update_code", "bundle:install"
         after "deploy:update_code", "netguru:write_release"
         after "deploy:revert", "deploy:restart"
@@ -195,6 +196,13 @@ module Netguru
           #notify ab
           task :notify_airbrake do
             run "cd #{current_path} && #{runner} rake airbrake:deploy TO=#{stage} REVISION=#{current_revision} REPO=#{repository}"
+          end
+
+          task :check_airbrake do
+            if ["beta", "production"].include? stage
+              airbrake = Airbrake.new ENV['AIRBRAKE_API_KEY']
+              airbrake.exec_capistrano_task
+            end
           end
 
           #ask sc
