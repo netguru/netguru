@@ -1,4 +1,5 @@
 require 'netguru/middleware/review'
+require 'netguru/lib/bullet_enabler'
 module Netguru
 
   def self.application_name
@@ -7,8 +8,10 @@ module Netguru
 
   class Railtie < Rails::Railtie
     if Rails.env.development?
-      initializer "netguru.insert_middleware" do |app|
+      initializer "netguru.railties" do |app|
         app.config.middleware.use Netguru::Middleware::Review
+
+        BulletEnabler.enable!(app)
       end
     end
   end
