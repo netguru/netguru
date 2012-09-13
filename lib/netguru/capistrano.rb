@@ -203,6 +203,8 @@ module Netguru
             if ENV['AIRBRAKE_AUTH_TOKEN']
               airbrake = ::Netguru::Airbrake.new ENV['AIRBRAKE_AUTH_TOKEN']
               airbrake.exec_capistrano_task
+            else
+              puts "No AIRBRAKE_AUTH_TOKEN - skipping airbrake check"
             end
           end
 
