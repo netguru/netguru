@@ -12,6 +12,6 @@ module Netguru
   end
 
   def self.config
-    Konf.new('config/netguru.yml')
+    @@config ||= Konf.new('config/netguru.yml')
   end
 end
