@@ -12,7 +12,6 @@ module Netguru
   end
 
   def self.config
-    binding.pry
     @@config ||= Konf.new('config/netguru.yml')
   end
 end
