@@ -3,6 +3,7 @@ require 'open-uri'
 require 'capistrano'
 require 'json'
 require 'hipchat'
+require 'netguru'
 module Netguru
   module Capistrano
     def self.load_into(configuration)
@@ -102,7 +103,7 @@ module Netguru
         after "deploy", "netguru:notify_hipchat"
 
         before "deploy:update_code", "netguru:review"
-        after "deploy:update_code", "netguru:check_airbrake"
+        before "deploy:update_code", "netguru:check_airbrake"
         after "deploy:update_code", "bundle:install"
         after "deploy:update_code", "netguru:write_release"
         after "deploy:revert", "deploy:restart"
@@ -199,8 +200,10 @@ module Netguru
           end
 
           task :check_airbrake do
-            airbrake = Airbrake.new ENV['AIRBRAKE_API_KEY']
-            airbrake.exec_capistrano_task
+            if ENV['AIRBRAKE_AUTH_TOKEN']
+              airbrake = ::Netguru::Airbrake.new ENV['AIRBRAKE_AUTH_TOKEN']
+              airbrake.exec_capistrano_task
+            end
           end
 
           #ask sc

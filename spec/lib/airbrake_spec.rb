@@ -2,6 +2,9 @@ require 'spec_helper'
 
 module Netguru
   describe Airbrake do
+    before do
+      Netguru.stub(:config).and_return(Konf.new({"airbrake" => { "project_id" => 'super_project' }}))
+    end
     let(:airbrake){ Airbrake.new "secret" }
     let(:airbrake_error_response){ File.open(File.join(File.dirname(__FILE__),  "..", "xml", "airbrake_errors.xml")) }
     let(:airbrake_ok_response){ File.open(File.join(File.dirname(__FILE__), "..", "xml", "airbrake_ok.xml")) }

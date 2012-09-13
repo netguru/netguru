@@ -1,6 +1,5 @@
 require 'open-uri'
 require 'rexml/document'
-
 module Netguru
   class Airbrake
     attr_accessor :auth_token, :errors_count
@@ -26,7 +25,7 @@ module Netguru
     private
 
     def url
-      "http://#{Netguru.airbrake_account}.airbrake.io/projects/#{Netguru.airbrake_project_id}/errors.xml?auth_token=#{@auth_token}"
+      "http://#{Netguru.airbrake_account}.airbrake.io/projects/#{Netguru.config.airbrake.project_id}/errors.xml?auth_token=#{@auth_token}"
     end
   end
 end

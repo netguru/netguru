@@ -10,16 +10,17 @@ describe Netguru::Capistrano do
 
   describe "check Airbrake" do
     it "initialize Airbrake with variable from ENV" do
-      ENV['AIRBRAKE_API_KEY'] = "secret"
+      ENV['AIRBRAKE_AUTH_TOKEN'] = "secret"
       @configuration.set :stage, "production"
       airbrake = stub "Airbrake", exec_capistrano_task: true
-      Netguru::Airbrake.should_receive(:new).with("secret").and_return airbrake
+      ::Netguru::Airbrake.should_receive(:new).with("secret").and_return airbrake
       @configuration.find_and_execute_task('netguru:check_airbrake')
     end
 
     it "doesn't check airbrake during deployment to staging" do
+      ENV['AIRBRAKE_AUTH_TOKEN'] = nil
       @configuration.set :stage, "staging"
-      Netguru::Airbrake.should_not_receive(:new)
+      ::Netguru::Airbrake.should_not_receive(:new)
       @configuration.find_and_execute_task('netguru:check_airbrake')
     end
   end
