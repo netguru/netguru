@@ -199,10 +199,8 @@ module Netguru
           end
 
           task :check_airbrake do
-            if ["beta", "production"].include? stage
-              airbrake = Airbrake.new ENV['AIRBRAKE_API_KEY']
-              airbrake.exec_capistrano_task
-            end
+            airbrake = Airbrake.new ENV['AIRBRAKE_API_KEY']
+            airbrake.exec_capistrano_task
           end
 
           #ask sc
