@@ -1,3 +1,4 @@
 # Netguru project configuration file
 airbrake:
   project_id: "airbrake_project_id_here"
+dashboard_url: "http://dashboard.exmaple.net"
