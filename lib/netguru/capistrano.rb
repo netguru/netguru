@@ -106,6 +106,7 @@ module Netguru
         before "deploy:update_code", "netguru:check_airbrake"
         after "deploy:update_code", "bundle:install"
         after "deploy:update_code", "netguru:write_release"
+        after "deploy:update_code", "netguru:update_crontab"
         after "deploy:revert", "deploy:restart"
 
 

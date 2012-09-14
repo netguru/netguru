@@ -4,6 +4,7 @@ class Netguru::BackupGenerator < Rails::Generators::Base
   def install
     install_safe
     install_rake
+    install_schedule
     puts "Now go and visit config/safe.rb and lib/tasks/backup.rake to make sure you are using proper settings!"
   end
 
@@ -15,6 +16,10 @@ class Netguru::BackupGenerator < Rails::Generators::Base
 
   def install_rake
     template 'backup.rake.erb', 'lib/tasks/backup.rake'
+  end
+
+  def install_schedule
+    template 'schedule.rb.erb', 'config/schedule.rb'
   end
 
 end
