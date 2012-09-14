@@ -176,7 +176,9 @@ module Netguru
           end
           #update whenever
           task :update_crontab do
-            run "cd #{current_path} && #{runner} whenever --update-crontab #{application} --set environment=#{fetch(:stage)}"
+            if fetch(:stage, 'staging') == 'production'
+              run "cd #{current_path} && #{runner} whenever --update-crontab #{application} --set environment=#{fetch(:stage)}"
+            end
           end
           #restart DJ
           task :restart_dj do
@@ -189,11 +191,9 @@ module Netguru
           end
           #backup db
           task :backup do
-            run("cd #{current_path} && astrails-safe -v config/safe.rb --local") if stage == 'production' or stage == 'beta'
-          end
-          #backup mongo db
-          task :mongo_backup do
-            run("cd #{current_path} && #{runner} rake mongo_backup:default")
+            if fetch(:stage, 'staging') == 'production' or fetch(:stage, 'staging') == 'beta'
+              run("cd #{current_path} &&  #{runner} rake netguru:backup[local]")
+            end
           end
           #notify ab
           task :notify_airbrake do
