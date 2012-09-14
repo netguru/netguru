@@ -4,10 +4,12 @@ namespace :netguru do
   task :backup, :local do |t, args|
     args.with_defaults(local: false)
     system("bundle exec astrails-safe config/safe.rb #{'--local' if args[:local]}")
-    Net::HTTP.post_form(URI.parse("#{Netguru.config.dashboard.url}/notifications/backup"), {
-      token: Netguru.config.dashboard.token,
-      :"payload[project_name]" => '<%= Netguru.application_name %>'
-    })
+    unless args[:local]
+      Net::HTTP.post_form(URI.parse("#{Netguru.config.dashboard.url}/notifications/backup"), {
+        token: Netguru.config.dashboard.token,
+        :"payload[project_name]" => '<%= Netguru.application_name %>'
+      })
+    end
   end
 end
 
