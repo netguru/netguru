@@ -1,3 +1,4 @@
+require "bullet"
 class BulletEnabler
   class << self
     def enable!(app)
