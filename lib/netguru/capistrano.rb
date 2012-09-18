@@ -106,6 +106,7 @@ module Netguru
         before "deploy:update_code", "netguru:check_airbrake"
         after "deploy:update_code", "bundle:install"
         after "deploy:update_code", "netguru:write_release"
+        after "deploy:update_code", "netguru:update_crontab"
         after "deploy:revert", "deploy:restart"
 
 
@@ -175,7 +176,9 @@ module Netguru
           end
           #update whenever
           task :update_crontab do
-            run "cd #{current_path} && #{runner} whenever --update-crontab #{application} --set environment=#{fetch(:stage)}"
+            if fetch(:stage, 'staging') == 'production'
+              run "cd #{current_path} && #{runner} whenever --update-crontab #{application} --set environment=#{fetch(:stage)}"
+            end
           end
           #restart DJ
           task :restart_dj do
@@ -188,11 +191,9 @@ module Netguru
           end
           #backup db
           task :backup do
-            run("cd #{current_path} && astrails-safe -v config/safe.rb --local") if stage == 'production' or stage == 'beta'
-          end
-          #backup mongo db
-          task :mongo_backup do
-            run("cd #{current_path} && #{runner} rake mongo_backup:default")
+            if fetch(:stage, 'staging') == 'production' or fetch(:stage, 'staging') == 'beta'
+              run("cd #{current_path} &&  #{runner} rake netguru:backup[local]")
+            end
           end
           #notify ab
           task :notify_airbrake do
@@ -200,11 +201,11 @@ module Netguru
           end
 
           task :check_airbrake do
-            if ENV['AIRBRAKE_AUTH_TOKEN']
-              airbrake = ::Netguru::Airbrake.new ENV['AIRBRAKE_AUTH_TOKEN']
+            if fetch("airbrake_auth_token", nil)
+              airbrake = ::Netguru::Airbrake.new fetch("airbrake_auth_token")
               airbrake.exec_capistrano_task
             else
-              puts "No AIRBRAKE_AUTH_TOKEN - skipping airbrake check"
+              puts "No airbrake_auth_token found in configuration - skipping airbrake check"
             end
           end
 
@@ -218,7 +219,7 @@ module Netguru
             end
 
             if standup_response['commits'] and standup_response['commits']['rejected'].to_i > 0
-              raise "[review] Computer says no! \n[review] There are #{standup_response['commits']['rejected']} rejected commits - #{standup_response['commits']['url']}"
+              raise "[review] Computer says no! - There are #{standup_response['commits']['rejected']} rejected commits - #{standup_response['commits']['url']}"
             else
               puts "[review] Pending #{standup_response['commits']['pending']}, passed #{standup_response['commits']['passed']}"
             end

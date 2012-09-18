@@ -23,11 +23,12 @@ Gem::Specification.new do |s|
   s.add_dependency "hipchat"
   s.add_dependency "airbrake"
   s.add_dependency "capistrano"
-  s.add_dependency 'astrails-safe'
+  s.add_dependency 'netguru-safe'
   s.add_dependency "konf"
   s.add_dependency "rvm-capistrano"
   s.add_dependency "checker"
   s.add_dependency "backup"
   s.add_dependency "bullet"
   s.add_dependency "pry"
+  s.add_dependency "whenever"
 end
