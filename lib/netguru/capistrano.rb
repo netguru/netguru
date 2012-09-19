@@ -201,11 +201,11 @@ module Netguru
           end
 
           task :check_airbrake do
-            if fetch("airbrake_auth_token", nil)
+            if fetch("stage", "staging") =~ /beta|production/ and fetch("airbrake_auth_token", nil)
               airbrake = ::Netguru::Airbrake.new fetch("airbrake_auth_token")
               airbrake.exec_capistrano_task
             else
-              puts "No airbrake_auth_token found in configuration - skipping airbrake check"
+              puts "Skipping airbrake check!"
             end
           end
 
