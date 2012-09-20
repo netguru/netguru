@@ -192,7 +192,7 @@ module Netguru
           #backup db
           task :backup do
             if fetch(:stage, 'staging') == 'production' or fetch(:stage, 'staging') == 'beta'
-              run("cd #{current_path} &&  #{runner} rake netguru:backup[local]")
+              run("cd #{current_path} && #{runner} rake netguru:backup[local]")
             end
           end
           #notify ab
