@@ -2,6 +2,7 @@ class BulletEnabler
   class << self
     def enable!(app)
       app.config.after_initialize do
+        require "bullet"
         Bullet.enable = true
         Bullet.alert = true
         Bullet.bullet_logger = true
