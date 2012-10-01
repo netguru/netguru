@@ -82,7 +82,12 @@ module Netguru
           end
 
           task :migrate do
-            run "cd #{current_path} && #{runner} rake db:migrate"
+            from = source.next_revision(current_revision)
+            if capture("cd #{latest_release} && #{source.local.log(from)} db/migrate | wc -l").to_i > 0
+              run "cd #{current_release} && #{runner} rake db:migrate"
+            else
+              logger.info "Skipping migrations - there are not any new."
+            end
           end
 
           desc "Update the deployed code"
