@@ -1,7 +1,7 @@
 require 'open-uri'
 module Netguru
   module Middleware
-    class Review
+    class GitChange
       def initialize(app)
         @app = app
       end
@@ -14,7 +14,7 @@ module Netguru
         elsif env["HTTP_ACCEPT"] =~ /html/
           status, headers, response = original_response
           if response.present? && response.respond_to?(:body) && response.body.respond_to?(:gsub)
-            [status, headers, [response.body.gsub("</body>", "#{review_response}</body>")]]
+            [status, headers, [response.body.gsub("</body>", "#{git_log}</body>")]]
           else
             original_response
           end
@@ -27,21 +27,15 @@ module Netguru
         Netguru.application_name
       end
 
-      def review_response
-          response = begin
-            timeout(0.5) do
-              res = JSON.parse(open("http://dashboard.netguru.pl/netguru/#{application_name}/commits/check.json").read)
-              if res['commits'] and res['commits']['rejected'].to_i > 0
-                "There are #{res['commits']['rejected']} rejected commits - #{res['commits']['url']}"
-              else
-                "Pending #{res['commits']['rejected']}, passed #{res['commits']['rejected']}"
-              end
-            end
-          rescue
-            "Can't access review info."
-          end
+      def git_log
+        response = begin
+          `cd #{Rails.root} && git log -g --pretty=format:"%ar" -1`
+        rescue
+          "Can't git log info."
+        end
         %{
-          <div id='review'>
+          <div id='git_log'>
+          Last git action:
           #{response}
           </div>
           #{styles}
@@ -51,7 +45,7 @@ module Netguru
       def styles
         %{
           <style>
-          #review {
+          #git_log {
           position: fixed;
           top: 10px;
           right: 10px;

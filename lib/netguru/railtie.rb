@@ -1,4 +1,4 @@
-require 'netguru/middleware/review'
+require 'netguru/middleware/git_change'
 require 'netguru/lib/bullet_enabler'
 module Netguru
 
@@ -9,7 +9,7 @@ module Netguru
   class Railtie < Rails::Railtie
     if Rails.env.development?
       initializer "netguru.railties" do |app|
-        app.config.middleware.use Netguru::Middleware::Review
+        app.config.middleware.use Netguru::Middleware::GitChange
 
         BulletEnabler.enable!(app)
       end
