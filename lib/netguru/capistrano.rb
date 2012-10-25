@@ -130,7 +130,7 @@ module Netguru
           end
 
           task :notify_hipchat_that_project_needs_review do
-            hipchat_client['tradeguru'].send("Review", "#{human} badly needs review. Help!", color: :red, notify: false)
+            hipchat_client['tradeguru'].send("Review", "<a href='http://review.netguru.pl/projects/#{application}/commits'>#{application}</a> badly needs review. Help!", color: :red, notify: false)
           end
 
           #migrate data (for data-enabled projects)
