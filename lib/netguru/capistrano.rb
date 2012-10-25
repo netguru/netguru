@@ -129,6 +129,10 @@ module Netguru
             hipchat_client[hipchat_room_name].send("Deploy", "#{human} finished deployment of #{application} to #{stage}.", color: :green, notify: false)
           end
 
+          task :notify_hipchat_that_project_needs_review do
+            hipchat_client['tradeguru'].send("Review", "#{human} badly needs review. Help!", color: :red, notify: false)
+          end
+
           #migrate data (for data-enabled projects)
           task :migrate_data do
             run("cd #{current_path} && #{runner} rake db:migrate:data")
@@ -219,6 +223,7 @@ module Netguru
             end
 
             if standup_response['commits'] and standup_response['commits']['rejected'].to_i > 0
+              run "#{runner} rake netguru:notify_hipchat_that_project_needs_review"
               raise "[review] Computer says no! - There are #{standup_response['commits']['rejected']} rejected commits - #{standup_response['commits']['url']}"
             else
               puts "[review] Pending #{standup_response['commits']['pending']}, passed #{standup_response['commits']['passed']}"
