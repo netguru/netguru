@@ -5,7 +5,7 @@ require "netguru/version"
 Gem::Specification.new do |s|
   s.name        = "netguru"
   s.version     = Netguru::VERSION
-  s.authors     = ["Marcin Stecki", "Jacek Jakubik", "Tomasz Pewinski", "Wiktor Schmidt", "Adam Nowak", "Kuba Łasecki"]
+  s.authors     = ["Marcin Stecki", "Jacek Jakubik", "Tomasz Pewinski", "Wiktor Schmidt", "Adam Nowak", "Kuba Lasecki"]
   s.email       = ["madsheeppl@gmail.com", "jakubik.jacek@gmail.com", "pewniak747@gmail.com", "wiktorschmidt@gmail.com", "adam.nowak@netguru.pl", "kubalasecki@gmail.com"]
   s.homepage    = "http://netguru.pl"
   s.summary     = "Netguru gem, taking care of our projects deployment strategy and stuff."
