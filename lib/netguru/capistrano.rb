@@ -82,7 +82,12 @@ module Netguru
           end
 
           task :migrate do
-            run "cd #{current_path} && #{runner} rake db:migrate"
+            from = source.next_revision(current_revision)
+            if capture("cd #{latest_release} && #{source.local.log(from)} db/migrate | wc -l").to_i > 0
+              run "cd #{current_release} && #{runner} rake db:migrate"
+            else
+              logger.info "Skipping migrations - there are not any new."
+            end
           end
 
           desc "Update the deployed code"
@@ -127,6 +132,10 @@ module Netguru
           desc "Sends hipchat notifcation on success"
           task :notify_hipchat do
             hipchat_client[hipchat_room_name].send("Deploy", "#{human} finished deployment of #{application} to #{stage}.", color: :green, notify: false)
+          end
+
+          task :notify_hipchat_that_project_needs_review do
+            hipchat_client['tradeguru'].send("Review", "#{human} badly needs review. Help!", color: :red, notify: false)
           end
 
           #migrate data (for data-enabled projects)
@@ -219,6 +228,7 @@ module Netguru
             end
 
             if standup_response['commits'] and standup_response['commits']['rejected'].to_i > 0
+              run "#{runner} rake netguru:notify_hipchat_that_project_needs_review"
               raise "[review] Computer says no! - There are #{standup_response['commits']['rejected']} rejected commits - #{standup_response['commits']['url']}"
             else
               puts "[review] Pending #{standup_response['commits']['pending']}, passed #{standup_response['commits']['passed']}"
