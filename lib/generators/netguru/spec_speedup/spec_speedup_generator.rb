@@ -5,6 +5,7 @@ class Netguru::SpecSpeedupGenerator < Rails::Generators::Base
   def install
     install_garbage_collector
     turn_off_logs_in_test_env
+    reduce_devise_stretches
   end
 
   private
@@ -26,6 +27,11 @@ class Netguru::SpecSpeedupGenerator < Rails::Generators::Base
     code.each do |line|
       application line, env: 'test'
     end
+  end
 
+  def reduce_devise_stretches
+    puts "\nTurning off Devise encryption for tests..."
+    template 'devise.rb', 'spec/spec_helper/devise.rb'
+    puts "Add require 'spec_helper/devise' to your spec_helper.rb"
   end
 end
