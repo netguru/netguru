@@ -213,7 +213,7 @@ module Netguru
           task :review do
 
             begin
-              standup_response = JSON.parse(open("#{Netguru.config.api.url}/review").read)
+              standup_response = JSON.parse(Netguru::Api.get("/review"))
             rescue => e
               raise "[review] Review process was not setup properly - #{e}"
             end

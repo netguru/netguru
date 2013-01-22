@@ -22,7 +22,7 @@ class Netguru::Api
   def self.request(url, req)
     sock = Net::HTTP.new(url.host, url.port)
     sock.use_ssl = true
-    sock.start {|http| http.request(req) }
+    sock.start {|http| http.request(req) }.body
   end
 
 end
