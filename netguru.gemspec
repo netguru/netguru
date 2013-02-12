@@ -29,4 +29,5 @@ Gem::Specification.new do |s|
   s.add_dependency "bullet"
   s.add_dependency "pry"
   s.add_dependency "whenever"
+  s.add_dependency "knife-solo"
 end
