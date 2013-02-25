@@ -1,0 +1,3 @@
+notify:
+  webhooks:
+    - url: 'http://dashboard.netguru.pl/notifications/circle'
