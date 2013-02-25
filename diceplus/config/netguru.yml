@@ -1,6 +1,0 @@
-# Netguru project configuration file
-airbrake:
-  project_id: "123"
-dashboard:
-  url: "http://dashboard.netguru.pl"
-  token: "5ec5bd33f18049f1285b630da754b0a2"
