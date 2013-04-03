@@ -29,6 +29,14 @@ In order to install:
 
     rails generate netguru:git_hooks
 
+Run generators
+  
+  * `rails g netguru`
+
+In orded to install peek dev tools:
+
+  * `rails g netguru:peek`
+
 ## TO DO:
 * specs for review response check during reponse
 * specs for sc middleware
