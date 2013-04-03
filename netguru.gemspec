@@ -20,6 +20,9 @@ Gem::Specification.new do |s|
   s.add_development_dependency "rspec"
   s.add_development_dependency "webmock"
   s.add_development_dependency "pry"
+  s.add_development_dependency "peek"
+  s.add_development_dependency "peek-git"
+  s.add_dependency "peek-performance_bar"
   s.add_dependency "hipchat"
   s.add_dependency "airbrake"
   s.add_dependency "capistrano"
@@ -29,7 +32,4 @@ Gem::Specification.new do |s|
   s.add_dependency "bullet"
   s.add_dependency "pry"
   s.add_dependency "whenever"
-  s.add_dependency "peek"
-  s.add_dependency "peek-git"
-  s.add_dependency "peek-performance_bar"
 end

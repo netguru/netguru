@@ -28,7 +28,7 @@ class Netguru::PeekGenerator < Rails::Generators::Base
         if content.match(/require_tree\s+\.\s*$/)
           # Good enough - that'll includeto peek styles
         else
-          style_require_block = " *= require peek\n"
+          style_require_block = "*= require peek\n"
           insert_into_file css_manifest, style_require_block, :after => "require_self\n"
         end
       end
@@ -44,6 +44,8 @@ class Netguru::PeekGenerator < Rails::Generators::Base
       puts "Adding group development to your Gemfile."
       open('gemfile', 'a') { |f|
         f << "group :development do\n"
+        f << "  gem 'peek'\n"
+        f << "  gem 'peek-git'\n"
         f << "  #gem 'peek-mysql2' ['peek-mongo', 'peek-pg'] - choose right one\n"
         f << "  #gem 'peek-redis'\n"
         f << "  #gem 'peek-dalli'\n"
