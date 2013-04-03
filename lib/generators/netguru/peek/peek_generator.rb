@@ -15,7 +15,7 @@ class Netguru::PeekGenerator < Rails::Generators::Base
 
     def install_assets
 
-      js_manifest = 'app/assets/javascripts/applications.coffee'
+      js_manifest = 'app/assets/javascripts/application.coffee'
 
       if File.exist?(js_manifest)
         insert_into_file js_manifest, "#= require peek\n", :after => "jquery_ujs\n"
@@ -42,8 +42,7 @@ class Netguru::PeekGenerator < Rails::Generators::Base
     def install_gemfile
       gemfile = 'Gemfile'
       puts "Adding group development to your Gemfile."
-      #insert_into_file gemfile, "#= require peek\n", :after => "jquery_ujs\n"
-      open('gemfile', 'w') { |f|
+      open('gemfile', 'a') { |f|
         f << "group :development do\n"
         f << "  #gem 'peek-mysql2' ['peek-mongo', 'peek-pg'] - choose right one\n"
         f << "  #gem 'peek-redis'\n"
