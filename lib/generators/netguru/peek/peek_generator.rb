@@ -18,7 +18,7 @@ class Netguru::PeekGenerator < Rails::Generators::Base
       js_manifest = 'app/assets/javascripts/application.coffee'
 
       if File.exist?(js_manifest)
-        insert_into_file js_manifest, "#= require peek\n", :after => "jquery_ujs\n"
+        insert_into_file js_manifest, "#= require peek\n #= peek/views/performance_bar\n", :after => "jquery_ujs\n"
       end
 
       css_manifest = 'app/assets/stylesheets/application.scss'
@@ -26,9 +26,9 @@ class Netguru::PeekGenerator < Rails::Generators::Base
       if File.exist?(css_manifest)
         content = File.read(css_manifest)
         if content.match(/require_tree\s+\.\s*$/)
-          # Good enough - that'll includeto peek styles
+          # Good enough
         else
-          style_require_block = "*= require peek\n"
+          style_require_block = "*= require peek\n *= peek/views/performance_bar\n"
           insert_into_file css_manifest, style_require_block, :after => "require_self\n"
         end
       end
@@ -37,6 +37,11 @@ class Netguru::PeekGenerator < Rails::Generators::Base
 
     def install_basics
       template 'peek.rb.erb', 'config/initializers/peek.rb'
+      template '_netguru_bar.haml', 'app/views/application/_netguru_bar.haml'
+      template '_netguru_results.haml', 'app/views/application/_netguru_results.haml'
+      template '_netguru_performance.haml', 'app/views/application/_netguru_performance.haml'
+      puts "You have to add 'netguru_bar' partial after %body statement in application layout"
+      puts "and 'netguru_results' in footer section of your layout"
     end
 
     def install_gemfile

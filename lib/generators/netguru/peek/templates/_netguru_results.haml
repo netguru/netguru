@@ -1,0 +1,11 @@
+- if peek_enabled?
+  span#peek-results.hidden
+    - Peek.views.each do |view| 
+      - view.results.each do |key, value| 
+        "data-#{view.defer_key}-#{key}=#{value}"
+
+  - Peek.views.each do |view| 
+    - if view.context?
+      span{id: view.context_dom_id, data-context => "#{raw(view.context.to_json)}"}
+
+  = render 'netguru_performance'
