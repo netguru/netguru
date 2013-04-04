@@ -36,6 +36,9 @@ class Netguru::PeekGenerator < Rails::Generators::Base
           style_require_block = "*= require peek\n*= require peek/views/performance_bar\n"
           insert_into_file css_manifest, style_require_block, :after => "require_self\n"
         end
+      else
+        puts "application.scss is missing"
+        puts "add 'require peek' & 'require peek/views/performance_bar' manually"
       end
 
     end
