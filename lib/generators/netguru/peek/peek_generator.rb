@@ -20,25 +20,25 @@ class Netguru::PeekGenerator < Rails::Generators::Base
       js_manifest = 'app/assets/javascripts/application.coffee'
 
       if File.exist?(js_manifest)
-        insert_into_file js_manifest, "#= require peek\n#= require peek/views/performance_bar\n", :after => "jquery_ujs\n"
+        insert_into_file js_manifest, "#= require netguru\n", :after => "jquery_ujs\n"
       else
         puts "application.coffe is missing"
-        puts "add 'require peek' & 'require peek/views/performance_bar' manually"
+        puts "add 'require netguru' manually"
       end
 
       css_manifest = 'app/assets/stylesheets/application.scss'
 
       if File.exist?(css_manifest)
         content = File.read(css_manifest)
-        if content.match(/peek\s+\.\s*$/)
+        if content.match(/netguru\s+\.\s*$/)
           # Good enough
         else
-          style_require_block = "*= require peek\n*= require peek/views/performance_bar\n"
+          style_require_block = "*= require netguru\n"
           insert_into_file css_manifest, style_require_block, :after => "require_self\n"
         end
       else
         puts "application.scss is missing"
-        puts "add 'require peek' & 'require peek/views/performance_bar' manually"
+        puts "add 'require netguru' manually"
       end
 
     end
@@ -48,6 +48,8 @@ class Netguru::PeekGenerator < Rails::Generators::Base
       template '_netguru_bar.haml', 'app/views/application/_netguru_bar.haml'
       template '_netguru_results.haml', 'app/views/application/_netguru_results.haml'
       template '_netguru_performance.haml', 'app/views/application/_netguru_performance.haml'
+      template 'netguru.scss', 'app/assets/stylesheets/netguru.scss'
+      template 'netguru.coffee', 'app/assets/javascripts/netguru.coffee'
       puts "You have to add 'netguru_bar' partial after %body statement in application layout"
       puts "and 'netguru_results' in footer section of your layout"
     end
