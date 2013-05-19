@@ -2,5 +2,5 @@
 airbrake:
   project_id: "airbrake_project_id_here"
 api:
-  url: "http://dashboard.exmaple.net"
+  url: "http://dashboard.example.net"
   token: "dashboard_token_here"
