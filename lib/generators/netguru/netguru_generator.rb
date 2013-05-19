@@ -39,7 +39,7 @@ class NetguruGenerator < Rails::Generators::Base
   end
 
   def install_nginx
-    template 'nginx.staging.conf', "config/nginx.staging.#{Netguru.application_name}.conf"
+    template 'nginx.staging.conf.erb', "config/nginx.staging.#{Netguru.application_name}.conf"
   end
 
 end
