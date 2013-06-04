@@ -1,6 +1,6 @@
 # Netguru project configuration file
-airbrake:
-  project_id: "airbrake_project_id_here"
+rollbar:
+  token: "rollbar_project_token_here"
 api:
   url: "http://dashboard.example.net"
   token: "dashboard_token_here"
