@@ -103,11 +103,12 @@ module Netguru
         after "deploy", "netguru:notify_hipchat"
 
         before "deploy:update_code", "netguru:review"
-        before "deploy:update_code", "netguru:check_airbrake"
+        before "deploy:update_code", "netguru:check_rollbar"
         after "deploy:update_code", "bundle:install"
         after "deploy:update_code", "netguru:write_release"
         after "deploy:update_code", "netguru:update_crontab"
         after "deploy:revert", "deploy:restart"
+        after "deploy:update_code", "netguru:notify_rollbar"
 
 
         # tag production releases by default
@@ -195,17 +196,21 @@ module Netguru
               run("cd #{current_path} && #{runner} rake netguru:backup[local]")
             end
           end
-          #notify ab
-          task :notify_airbrake do
-            run "cd #{current_path} && #{runner} rake airbrake:deploy TO=#{stage} REVISION=#{current_revision} REPO=#{repository}"
+          #notify rb
+          task :notify_rollbar, :roles => :app do
+            set :revision, `git log -n 1 --pretty=format:"%H"`
+            set :local_user, `whoami`
+            set :rollbar_token, Netguru.config.rollbar.post_server_item_token
+            rails_env = fetch(:rails_env, 'production')
+            run "curl https://api.rollbar.com/api/1/deploy/ -F access_token=#{rollbar_token} -F environment=#{rails_env} -F revision=#{revision} -F local_username=#{local_user} >/dev/null 2>&1", :once => true
           end
 
-          task :check_airbrake do
-            if fetch("stage", "staging") =~ /beta|production/ and fetch("airbrake_auth_token", nil)
-              airbrake = ::Netguru::Airbrake.new fetch("airbrake_auth_token")
-              airbrake.exec_capistrano_task
+          task :check_rollbar do
+            if fetch("stage", "staging") =~ /beta|production/
+              rollbar = ::Netguru::Rollbar.new Netguru.config.rollbar.read_token
+              rollbar.exec_capistrano_task
             else
-              puts "Skipping airbrake check!"
+              puts "Skipping rollbar check!"
             end
           end
 

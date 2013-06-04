@@ -29,7 +29,8 @@ class NetguruGenerator < Rails::Generators::Base
     template 'config.yml', 'config/config.yml'
     template 'netguru.yml', 'config/netguru.yml'
     template 'sec_config.yml.sample', 'config/sec_config.yml.sample'
-    puts "Add require File.expand_path('../preinitializer', __FILE__) to your application.rb"
+    puts "Add this line to your application.rb"
+    puts "require File.expand_path('../preinitializer', __FILE__)"
   end
 
   def install_capistrano
@@ -38,7 +39,7 @@ class NetguruGenerator < Rails::Generators::Base
   end
 
   def install_nginx
-    template 'nginx.staging.conf', "config/nginx.staging.#{Netguru.application_name}.conf"
+    template 'nginx.staging.conf.erb', "config/nginx.staging.#{Netguru.application_name}.conf"
   end
 
 end

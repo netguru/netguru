@@ -1,6 +1,8 @@
 # Netguru project configuration file
-airbrake:
-  project_id: "airbrake_project_id_here"
-dashboard:
-  url: "http://dashboard.exmaple.net"
+rollbar:
+  read_token: "read token goes here"
+  post_server_item_token: "server token goes here"
+  # to get from here: https://rollbar.com/settings/project/<project_id>/access_tokens
+api:
+  url: "http://dashboard.example.net"
   token: "dashboard_token_here"

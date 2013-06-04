@@ -24,7 +24,6 @@ Gem::Specification.new do |s|
   s.add_dependency "peek-git"
   s.add_dependency "peek-performance_bar"
   s.add_dependency "hipchat"
-  s.add_dependency "airbrake"
   s.add_dependency "capistrano"
   s.add_dependency "konf"
   s.add_dependency "rvm-capistrano"

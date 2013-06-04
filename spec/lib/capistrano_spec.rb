@@ -8,20 +8,19 @@ describe Netguru::Capistrano do
     Netguru::Capistrano.load_into(@configuration)
   end
 
-  describe "check Airbrake" do
-    it "initialize Airbrake with variable from ENV" do
-      ENV['AIRBRAKE_AUTH_TOKEN'] = "secret"
+  describe "check Rollbar" do
+    it "initialize Rollbar with variable from config" do
+       Netguru.stub(:config).and_return(Konf.new({"rollbar" => { "token" => 'secret' }}))
       @configuration.set :stage, "production"
-      airbrake = stub "Airbrake", exec_capistrano_task: true
-      ::Netguru::Airbrake.should_receive(:new).with("secret").and_return airbrake
-      @configuration.find_and_execute_task('netguru:check_airbrake')
+      rollbar = stub "Rollbar", exec_capistrano_task: true
+      ::Netguru::Rollbar.should_receive(:new).with("secret").and_return rollbar
+      @configuration.find_and_execute_task('netguru:check_rollbar')
     end
 
-    it "doesn't check airbrake during deployment to staging" do
-      ENV['AIRBRAKE_AUTH_TOKEN'] = nil
+    it "doesn't check rollbar during deployment to staging" do
       @configuration.set :stage, "staging"
-      ::Netguru::Airbrake.should_not_receive(:new)
-      @configuration.find_and_execute_task('netguru:check_airbrake')
+      ::Netguru::Rollbar.should_not_receive(:new)
+      @configuration.find_and_execute_task('netguru:check_rollbar')
     end
   end
 
