@@ -198,7 +198,7 @@ module Netguru
           end
           #notify rb
           task :notify_rollbar, :roles => :app do
-            if Netguru.config.rollbar.token
+            if Netguru.config.rollbar.present?
               set :revision, `git log -n 1 --pretty=format:"%H"`
               set :local_user, `whoami`
               set :rollbar_token, Netguru.config.rollbar.token
