@@ -202,7 +202,9 @@ module Netguru
             set :local_user, `whoami`
             set :rollbar_token, Netguru.config.rollbar.token
             rails_env = fetch(:rails_env, 'production')
-            run "curl https://api.rollbar.com/api/1/deploy/ -F access_token=#{rollbar_token} -F environment=#{rails_env} -F revision=#{revision} -F local_username=#{local_user} >/dev/null 2>&1", :once => true
+            if rollbar_token
+              run "curl https://api.rollbar.com/api/1/deploy/ -F access_token=#{rollbar_token} -F environment=#{rails_env} -F revision=#{revision} -F local_username=#{local_user} >/dev/null 2>&1", :once => true
+            end
           end
 
           task :check_rollbar do
