@@ -29,7 +29,7 @@ module Netguru
     end
 
     def url
-      "https://api.rollbar.com/api/1/items/?access_token=#{@auth_token}"
+      "https://api.rollbar.com/api/1/items/?access_token=#{@auth_token}&status=active"
     end
 
   end
