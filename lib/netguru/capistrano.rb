@@ -198,17 +198,15 @@ module Netguru
           end
           #notify rb
           task :notify_rollbar, :roles => :app do
-            if Netguru.config.rollbar.present?
-              set :revision, `git log -n 1 --pretty=format:"%H"`
-              set :local_user, `whoami`
-              set :rollbar_token, Netguru.config.rollbar.token
-              rails_env = fetch(:rails_env, 'production')
-              run "curl https://api.rollbar.com/api/1/deploy/ -F access_token=#{rollbar_token} -F environment=#{rails_env} -F revision=#{revision} -F local_username=#{local_user} >/dev/null 2>&1", :once => true
-            end
+            set :revision, `git log -n 1 --pretty=format:"%H"`
+            set :local_user, `whoami`
+            set :rollbar_token, Netguru.config.rollbar.token
+            rails_env = fetch(:rails_env, 'production')
+            run "curl https://api.rollbar.com/api/1/deploy/ -F access_token=#{rollbar_token} -F environment=#{rails_env} -F revision=#{revision} -F local_username=#{local_user} >/dev/null 2>&1", :once => true
           end
 
           task :check_rollbar do
-            if fetch("stage", "staging") =~ /beta|production/ and Netguru.config.rollbar.token
+            if fetch("stage", "staging") =~ /beta|production/
               rollbar = ::Netguru::Rollbar.new Netguru.config.rollbar.token
               rollbar.exec_capistrano_task
             else
