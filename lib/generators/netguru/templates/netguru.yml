@@ -1,6 +1,8 @@
 # Netguru project configuration file
 rollbar:
-  token: "rollbar_project_token_here"
+  post_client_item_token: "client token goes here"
+  post_server_item_token: "server token goes here"
+  # to get from here: https://rollbar.com/settings/project/<project_id>/access_tokens
 api:
   url: "http://dashboard.example.net"
   token: "dashboard_token_here"

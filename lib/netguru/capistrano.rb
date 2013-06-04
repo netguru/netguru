@@ -200,14 +200,14 @@ module Netguru
           task :notify_rollbar, :roles => :app do
             set :revision, `git log -n 1 --pretty=format:"%H"`
             set :local_user, `whoami`
-            set :rollbar_token, Netguru.config.rollbar.token
+            set :rollbar_token, Netguru.config.rollbar.post_server_item_token
             rails_env = fetch(:rails_env, 'production')
             run "curl https://api.rollbar.com/api/1/deploy/ -F access_token=#{rollbar_token} -F environment=#{rails_env} -F revision=#{revision} -F local_username=#{local_user} >/dev/null 2>&1", :once => true
           end
 
           task :check_rollbar do
             if fetch("stage", "staging") =~ /beta|production/
-              rollbar = ::Netguru::Rollbar.new Netguru.config.rollbar.token
+              rollbar = ::Netguru::Rollbar.new Netguru.config.rollbar.post_client_item_token
               rollbar.exec_capistrano_task
             else
               puts "Skipping rollbar check!"
