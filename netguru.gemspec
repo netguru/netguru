@@ -21,7 +21,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency "webmock"
   s.add_development_dependency "pry"
   s.add_dependency "hipchat"
-  s.add_dependency "airbrake"
   s.add_dependency "capistrano"
   s.add_dependency "konf"
   s.add_dependency "rvm-capistrano"
