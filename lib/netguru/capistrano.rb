@@ -20,6 +20,7 @@ module Netguru
         set :user, application
         set(:deploy_to) { "/home/#{fetch(:user)}/app" }
         set :rvm_type, :system
+        set :rvm_path, "/usr/local/rvm"
 
         branches = {:production => :beta, :beta => :staging, :staging => :master}
         set(:branch) { branches[fetch(:stage).to_sym].to_s } unless exists?(:branch)
