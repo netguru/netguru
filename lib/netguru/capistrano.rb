@@ -109,7 +109,7 @@ module Netguru
         after "deploy:update_code", "netguru:write_release"
         after "deploy:update_code", "netguru:update_crontab"
         after "deploy:revert", "deploy:restart"
-        after "deploy:update_code", "netguru:notify_rollbar"
+        after "deploy:restart", "netguru:notify_rollbar"
 
 
         # tag production releases by default
