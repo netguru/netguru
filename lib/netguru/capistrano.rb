@@ -20,6 +20,7 @@ module Netguru
         set :user, application
         set(:deploy_to) { "/home/#{fetch(:user)}/app" }
         set :rvm_type, :system
+        set :rvm_path, "/usr/local/rvm"
 
         branches = {:production => :beta, :beta => :staging, :staging => :master}
         set(:branch) { branches[fetch(:stage).to_sym].to_s } unless exists?(:branch)
@@ -108,7 +109,7 @@ module Netguru
         after "deploy:update_code", "netguru:write_release"
         after "deploy:update_code", "netguru:update_crontab"
         after "deploy:revert", "deploy:restart"
-        after "deploy:update_code", "netguru:notify_rollbar"
+        after "deploy:restart", "netguru:notify_rollbar"
 
 
         # tag production releases by default
