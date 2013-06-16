@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.version     = Netguru::VERSION
   s.authors     = ["Marcin Stecki", "Jacek Jakubik", "Tomasz Pewinski", "Wiktor Schmidt", "Adam Nowak", "Kuba Lasecki"]
   s.email       = ["madsheeppl@gmail.com", "jakubik.jacek@gmail.com", "pewniak747@gmail.com", "wiktorschmidt@gmail.com", "adam.nowak@netguru.pl", "kubalasecki@gmail.com"]
-  s.homepage    = "http://netguru.pl"
+  s.homepage    = "https://netguru.co"
   s.summary     = "Netguru gem, taking care of our projects deployment strategy and stuff."
   s.description = "This is the gem we include in every netguru project, to get proper deployment to staging, beta and production server."
 
@@ -20,6 +20,9 @@ Gem::Specification.new do |s|
   s.add_development_dependency "rspec"
   s.add_development_dependency "webmock"
   s.add_development_dependency "pry"
+  s.add_dependency "peek"
+  s.add_dependency "peek-git"
+  s.add_dependency "peek-performance_bar"
   s.add_dependency "hipchat"
   s.add_dependency "capistrano"
   s.add_dependency "konf"

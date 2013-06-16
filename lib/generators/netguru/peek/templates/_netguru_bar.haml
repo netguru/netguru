@@ -1,0 +1,6 @@
+- if peek_enabled? 
+  #peek{class: "#{Peek.env} #{'disabled' if cookies[:peek] == 'false'}"}
+    .wrapper
+      - Peek.views.each do |view| 
+        .view{id: view.dom_id}
+          = render view.partial_path, view: view 
