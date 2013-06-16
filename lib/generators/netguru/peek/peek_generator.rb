@@ -64,6 +64,7 @@ class Netguru::PeekGenerator < Rails::Generators::Base
           f << "  gem 'peek'\n"
           f << "  gem 'peek-git'\n"
           f << "  gem 'peek-performance_bar'\n"
+          f << "  gem 'peek-gc'"
           f << "  #gem 'peek-mysql2' ['peek-mongo', 'peek-pg'] - choose right one\n"
           f << "  #gem 'peek-redis'\n"
           f << "  #gem 'peek-dalli'\n"
