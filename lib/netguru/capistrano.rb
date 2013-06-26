@@ -219,7 +219,7 @@ module Netguru
             end
 
             if standup_response['commits'] and standup_response['commits']['rejected'].to_i > 0
-              hipchat_client['tradeguru'].send("Review", "help! <a href='#{Netguru.config.dashboard.url}projects/#{application}/commits'>#{application}</a> badly needs review.", color: :red, notify: false)
+              hipchat_client['tradeguru'].send("Review", "help! <a href='#{standup_response['url']}/projects/#{application}/commits'>#{application}</a> badly needs review.", color: :red, notify: false)
               raise "[review] Computer says no! - There are #{standup_response['commits']['rejected']} rejected commits - #{standup_response['commits']['url']}"
             else
               puts "[review] Pending #{standup_response['commits']['pending']}, passed #{standup_response['commits']['passed']}"
