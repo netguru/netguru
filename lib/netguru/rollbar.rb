@@ -16,9 +16,9 @@ module Netguru
     def exec_capistrano_task
       if errors_count > 0
         errors = (errors_count == 20 ? "at least 20" : errors_count)
-        raise "[rollbar] Computer says no! - There are #{errors} errors."
+        raise "[rollbar] Computer says no! - There are #{errors} errors to fix. Check project's rollbar dashboard."
       else
-        "[rollbar] There are #{errors_count} errors - OK."
+        "[rollbar] There is no errors - OK."
       end
     end
 
