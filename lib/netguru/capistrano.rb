@@ -54,6 +54,15 @@ module Netguru
             run "cd #{current_path} && git checkout -b #{stage} ; git merge #{remote}/#{branch}; git push #{remote} #{stage}"
           end
 
+          task :setup_existing, :except => { :no_release => true } do
+            dirs = [deploy_to, shared_path]
+            dirs += shared_children.map { |d| File.join(shared_path, d) }
+            run "mkdir -p #{dirs.join(' ')} && chmod g+w #{dirs.join(' ')}"
+            run "ssh-keyscan github.com >> /home/#{user}/.ssh/known_hosts"
+            run "git clone #{repository} #{current_path}"
+            run "cd #{current_path} && git branch --track #{stage} #{remote}/#{stage}"
+          end
+
           task :default do
             update
             migrate unless fetch(:skip_migrations, false)
