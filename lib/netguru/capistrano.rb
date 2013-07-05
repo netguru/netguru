@@ -60,7 +60,7 @@ module Netguru
             run "mkdir -p #{dirs.join(' ')} && chmod g+w #{dirs.join(' ')}"
             run "ssh-keyscan github.com >> /home/#{user}/.ssh/known_hosts"
             run "git clone #{repository} #{current_path}"
-            run "cd #{current_path} && git branch --track #{stage} #{remote}/#{stage}"
+            run "cd #{current_path} && git branch --track #{stage} #{remote}/#{stage}; git checkout #{stage}"
           end
 
           task :default do
