@@ -3,8 +3,9 @@ require 'spec_helper'
 module Netguru
   describe Rollbar do
     before do
-      Netguru.stub(:config).and_return(Konf.new({"rollbar" => { "token" => 'super_token' }}))
+      Netguru.stub(:config).and_return(Konf.new({"rollbar" => { "read_token" => 'super_token' }}))
     end
+
     let(:rollbar){ Rollbar.new "super_token" }
     let(:rollbar_error_response){ File.read("./spec/json/rollbar_errors.json") }
     let(:rollbar_ok_response){ File.read("./spec/json/rollbar_ok.json") }

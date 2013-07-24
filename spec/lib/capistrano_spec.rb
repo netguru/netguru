@@ -10,7 +10,7 @@ describe Netguru::Capistrano do
 
   describe "check Rollbar" do
     it "initialize Rollbar with variable from config" do
-       Netguru.stub(:config).and_return(Konf.new({"rollbar" => { "token" => 'secret' }}))
+       Netguru.stub(:config).and_return(Konf.new({"rollbar" => { "read_token" => 'secret' }}))
       @configuration.set :stage, "production"
       rollbar = stub "Rollbar", exec_capistrano_task: true
       ::Netguru::Rollbar.should_receive(:new).with("secret").and_return rollbar
