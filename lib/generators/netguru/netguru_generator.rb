@@ -11,17 +11,12 @@ class NetguruGenerator < Rails::Generators::Base
     install_capistrano
     install_konf
     install_rvm
-    install_pow
   end
 
   private
 
-  def install_pow
-    template 'powrc', '.powrc'
-  end
-
   def install_rvm
-    template 'rvmrc', '.rvmrc'
+    template 'ruby-version', '.ruby-version'
   end
 
   def install_konf
