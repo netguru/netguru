@@ -4,6 +4,7 @@ require 'capistrano'
 require 'json'
 require 'hipchat'
 require 'netguru'
+
 module Netguru
   module Capistrano
     def self.load_into(configuration)
@@ -120,11 +121,32 @@ module Netguru
         after "deploy:revert", "deploy:restart"
         after "deploy:restart", "netguru:notify_rollbar"
 
+        if fetch(:remote_logger, false)
+          require 'netguru/capistrano/remote_logger'
+          logger.device = Netguru::Capistrano::RemoteLogger.new(application, stage)
+          before "deploy:update_code", "netguru:set_logger"
+          after "deploy:restart", "netguru:flush_logger"
+
+        end
 
         # tag production releases by default
         after "production", "netguru:set_tagging"
 
         namespace :netguru do
+
+          desc "Flush rest of the messages"
+          task :flush_logger do
+            logger.device.flush_messages
+            logger.device.log_success
+          end
+
+          desc "Set for the case of failure"
+          task :set_logger do
+            on_rollback do
+              logger.device.flush_messages
+              logger.device.log_failure
+            end
+          end
 
           desc "Sends hipchat notifcation on fail"
           task :set_hipchat do
