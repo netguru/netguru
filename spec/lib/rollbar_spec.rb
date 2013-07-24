@@ -30,16 +30,16 @@ module Netguru
 
     it "pass deploy when rollbar has no errors" do
       stub_ok_request
-      expect(rollbar.exec_capistrano_task).to eq "[rollbar] There are 0 errors - OK."
+      expect(rollbar.exec_capistrano_task).to eq "[rollbar] There is no errors - OK."
     end
 
     def stub_error_request
-      stub_request(:get, "https://api.rollbar.com/api/1/items/?access_token=super_token").
+      stub_request(:get, "https://api.rollbar.com/api/1/items/?access_token=super_token&status=active").
         to_return(status: 200, body: rollbar_error_response, headers: {})
     end
 
     def stub_ok_request
-      stub_request(:get, "https://api.rollbar.com/api/1/items/?access_token=super_token").
+      stub_request(:get, "https://api.rollbar.com/api/1/items/?access_token=super_token&status=active").
         to_return(status: 200, body: rollbar_ok_response, headers: {})
     end
   end
