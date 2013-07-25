@@ -125,8 +125,7 @@ module Netguru
           require 'netguru/capistrano/remote_logger'
           logger.device = Netguru::Capistrano::RemoteLogger.new(application, stage)
           before "deploy:update_code", "netguru:set_logger"
-          after "deploy:restart", "netguru:flush_logger"
-
+          after "deploy", "netguru:flush_logger"
         end
 
         # tag production releases by default
