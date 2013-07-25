@@ -20,15 +20,17 @@ module Netguru
         @messages[line_nr] = message
       end
 
-      def flush_messages
+      def payload
         data = {
           stage: @stage,
           messages: @messages,
-          project_id: @application,
-          state: 'running'
+          project_id: @application
         }
-        payload = data.to_json
+        data.merge!(state: 'running') unless @external_id
+        data.to_json
+      end
 
+      def flush_messages
         if @external_id
           Thread.new{ Netguru::Api.post("/external_deployments/#{@external_id}", _method: :put, payload: payload) }
         else
