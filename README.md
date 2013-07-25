@@ -1,5 +1,7 @@
 # netguru gem
-Gem designed to take the load of config/deploy.rb
+Gem designed to:
+ - help generating new project
+ - take the load of config/deploy.rb
 
 ## tasks
 
