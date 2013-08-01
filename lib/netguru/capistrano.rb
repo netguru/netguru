@@ -90,9 +90,9 @@ module Netguru
           desc "Update the deployed code"
           task :update_code, :except => { :no_release => true } do
             if fetch(:push_deployment, false)
-              run "cd #{current_path} && git fetch #{remote} && git checkout #{stage} -f && git merge #{remote}/#{branch} && git push #{remote} #{stage}"
-            else #support migration of deployment styles
               run "cd #{current_path} && git fetch #{remote} && git checkout #{stage} -f && git merge #{remote}/#{branch}"
+            else #support migration of deployment styles
+              run "cd #{current_path} && git fetch #{remote} && git checkout #{stage} -f && git merge #{remote}/#{branch} && git push #{remote} #{stage}"
             end
           end
 
