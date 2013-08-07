@@ -149,6 +149,10 @@ module Netguru
             set :human, ENV['HIPCHAT_USER'] ||  fetch(:hipchat_user, nil) || `whoami`
             on_rollback do
               hipchat_client[hipchat_room_name].send("Deploy", "#{human} cancelled deployment of #{application} to #{stage}.", color: :red, notify: true)
+              if fetch(:remote_logger, false)
+                logger.device.flush_messages
+                logger.device.log_failure
+              end
             end
           end
 
