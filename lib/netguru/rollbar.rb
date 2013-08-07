@@ -1,5 +1,9 @@
 module Netguru
   class Rollbar
+
+    class Errors < StandardError
+    end
+
     attr_accessor :auth_token, :errors_count
 
     def initialize auth_token
@@ -16,7 +20,7 @@ module Netguru
     def exec_capistrano_task
       if errors_count > 0
         errors = (errors_count == 20 ? "at least 20" : errors_count)
-        raise "[rollbar] Computer says no! - There are #{errors} errors to fix. Check project's rollbar dashboard."
+        raise Errors, "[rollbar] Computer says no! - There are #{errors} errors to fix. Check project's rollbar dashboard."
       else
         "[rollbar] There is no errors - OK."
       end

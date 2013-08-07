@@ -234,7 +234,12 @@ module Netguru
           task :check_rollbar do
             if fetch("stage", "staging") =~ /beta|production/
               rollbar = ::Netguru::Rollbar.new Netguru.config.rollbar.read_token
-              rollbar.exec_capistrano_task
+              begin
+                rollbar.exec_capistrano_task
+              rescue Netguru::Rollbar::Errors => e
+                logger.info e.message
+                abort
+              end
             else
               logger.info "Skipping rollbar check!"
             end
