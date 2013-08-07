@@ -105,6 +105,13 @@ module Netguru
 
         #common tasks
 
+        if fetch(:remote_logger, false)
+          require 'netguru/capistrano/remote_logger'
+          logger.device = Netguru::Capistrano::RemoteLogger.new(application, stage)
+          before "deploy", "netguru:set_logger"
+          after "deploy", "netguru:flush_logger"
+        end
+
         before "deploy:update_code", "netguru:set_hipchat"
         after "deploy", "netguru:notify_hipchat"
 
@@ -116,12 +123,6 @@ module Netguru
         after "deploy:revert", "deploy:restart"
         after "deploy:restart", "netguru:notify_rollbar"
 
-        if fetch(:remote_logger, false)
-          require 'netguru/capistrano/remote_logger'
-          logger.device = Netguru::Capistrano::RemoteLogger.new(application, stage)
-          before "deploy:update_code", "netguru:set_logger"
-          after "deploy", "netguru:flush_logger"
-        end
 
         # tag production releases by default
         after "production", "netguru:set_tagging"
