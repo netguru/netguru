@@ -56,11 +56,10 @@ module Netguru
           end
 
           task :default do
-            update
-            migrate unless fetch(:skip_migrations, false)
-            restart
-            on_rollback do
-              set :hipchat_color, 'red'
+            transaction do
+              update
+              migrate unless fetch(:skip_migrations, false)
+              restart
             end
           end
 
@@ -108,7 +107,7 @@ module Netguru
         if fetch(:remote_logger, false)
           require 'netguru/capistrano/remote_logger'
           logger.device = Netguru::Capistrano::RemoteLogger.new(application, stage)
-          before "deploy", "netguru:set_logger"
+          before "deploy:update", "netguru:set_logger"
           after "deploy", "netguru:flush_logger"
         end
 
@@ -131,14 +130,14 @@ module Netguru
 
           desc "Flush rest of the messages"
           task :flush_logger do
-            logger.device.flush_messages
+            logger.device.finish
             logger.device.log_success
           end
 
           desc "Set for the case of failure"
           task :set_logger do
             on_rollback do
-              logger.device.flush_messages
+              logger.device.finish
               logger.device.log_failure
             end
           end
@@ -149,10 +148,6 @@ module Netguru
             set :human, ENV['HIPCHAT_USER'] ||  fetch(:hipchat_user, nil) || `whoami`
             on_rollback do
               hipchat_client[hipchat_room_name].send("Deploy", "#{human} cancelled deployment of #{application} to #{stage}.", color: :red, notify: true)
-              if fetch(:remote_logger, false)
-                logger.device.flush_messages
-                logger.device.log_failure
-              end
             end
           end
 
@@ -241,7 +236,7 @@ module Netguru
               rollbar = ::Netguru::Rollbar.new Netguru.config.rollbar.read_token
               rollbar.exec_capistrano_task
             else
-              puts "Skipping rollbar check!"
+              logger.info "Skipping rollbar check!"
             end
           end
 
@@ -251,14 +246,16 @@ module Netguru
             begin
               standup_response = JSON.parse(Netguru::Api.get("/review"))
             rescue => e
-              raise "[review] Review process was not setup properly - #{e}"
+              logger.info "[review] Review process was not setup properly - #{e}"
+              abort
             end
 
             if standup_response['commits'] and standup_response['commits']['rejected'].to_i > 0
               hipchat_client['tradeguru'].send("Review", "help! <a href='#{standup_response['url']}'>#{application}</a> badly needs review.", color: :red, notify: false)
-              raise "[review] Computer says no! - There are #{standup_response['commits']['rejected']} rejected commits - #{standup_response['commits']['url']}"
+              logger.info "[review] Computer says no! - There are #{standup_response['commits']['rejected']} rejected commits - #{standup_response['url']}"
+              abort
             else
-              puts "[review] Pending #{standup_response['commits']['pending']}, passed #{standup_response['commits']['passed']}"
+              logger.info "[review] Pending #{standup_response['commits']['pending']}, passed #{standup_response['commits']['passed']}"
             end
 
           end
