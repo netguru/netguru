@@ -23,7 +23,7 @@ module Netguru
         set :rvm_type, :system
         set :rvm_path, "/usr/local/rvm"
 
-        branches = {:production => :beta, :beta => :staging, :staging => :master}
+        branches = {:production => :production, :beta => :beta, :staging => :master}
         set(:branch) { branches[fetch(:stage).to_sym].to_s } unless exists?(:branch)
 
         role(:db, :primary => true) { fetch(:webserver) }
@@ -52,7 +52,7 @@ module Netguru
             run "mkdir -p #{dirs.join(' ')} && chmod g+w #{dirs.join(' ')}"
             run "ssh-keyscan github.com >> /home/#{user}/.ssh/known_hosts"
             run "git clone #{repository} #{current_path}"
-            run "cd #{current_path} && git branch --track #{stage} #{remote}/#{stage}; git checkout #{stage}"
+            run "cd #{current_path} && git branch --track #{branch} #{remote}/#{branch}; git checkout #{branch}"
           end
 
           task :default do
@@ -73,13 +73,13 @@ module Netguru
           end
 
           task :quickfix do
-            run "cd #{current_path} && git pull #{remote} #{stage} && touch tmp/restart.txt"
+            run "cd #{current_path} && git pull #{remote} #{branch} && touch tmp/restart.txt"
           end
 
           desc "revert your stage branch to specified timestamp and restart app (cap stage deploy:revert -s to=201205121417)"
           task :revert do
             raise "specify the revision you want to rollback to - cap stage deploy:revert -s to=201205121417" unless exists?(:to)
-            run "cd #{current_path} && git fetch --tags #{remote} && git checkout #{stage} -f && git reset --hard #{to}-#{stage} git push --force #{remote} #{stage}"
+            run "cd #{current_path} && git fetch --tags #{remote} && git checkout #{branch} -f && git reset --hard #{to}-#{branch} git push --force #{branch} #{stage}"
           end
 
           task :migrate do
@@ -88,11 +88,7 @@ module Netguru
 
           desc "Update the deployed code"
           task :update_code, :except => { :no_release => true } do
-            if fetch(:push_deployment, false)
-              run "cd #{current_path} && git fetch #{remote} && git checkout #{stage} -f && git merge #{remote}/#{branch}"
-            else #support migration of deployment styles
-              run "cd #{current_path} && git fetch #{remote} && git checkout #{stage} -f && git merge #{remote}/#{branch} && git push #{remote} #{stage}"
-            end
+              run "cd #{current_path} && git checkout #{branch} && git pull origin #{branch}"
           end
 
           desc "Restarts app"
