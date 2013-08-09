@@ -100,7 +100,7 @@ module Netguru
 
         #common tasks
 
-        if fetch(:remote_logger, false)
+        unless fetch(:local_logger, false)
           require 'netguru/capistrano/remote_logger'
           logger.device = Netguru::Capistrano::RemoteLogger.new(application, stage)
           before "deploy:update", "netguru:set_logger"
