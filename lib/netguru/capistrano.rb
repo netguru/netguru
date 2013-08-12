@@ -102,7 +102,6 @@ module Netguru
 
         unless fetch(:local_logger, false)
           require 'netguru/capistrano/remote_logger'
-          logger.device = Netguru::Capistrano::RemoteLogger.new(application, stage)
           before "deploy:update", "netguru:set_logger"
           after "deploy", "netguru:flush_logger"
         end
@@ -125,7 +124,6 @@ module Netguru
         after "production", "netguru:set_tagging"
 
         namespace :netguru do
-
           desc "Flush rest of the messages"
           task :flush_logger do
             logger.device.finish
@@ -134,6 +132,7 @@ module Netguru
 
           desc "Set for the case of failure"
           task :set_logger do
+            logger.device = Netguru::Capistrano::RemoteLogger.new(application, stage)
             on_rollback do
               logger.device.finish
               logger.device.log_failure
