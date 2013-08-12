@@ -107,8 +107,10 @@ module Netguru
           after "deploy", "netguru:flush_logger"
         end
 
-        before "deploy:update_code", "netguru:set_hipchat"
-        after "deploy", "netguru:notify_hipchat"
+        if fetch(:hipchat_token, false)
+          before "deploy:update_code", "netguru:set_hipchat"
+          after "deploy", "netguru:notify_hipchat"
+        end
 
         before "deploy:update_code", "netguru:review"
         before "deploy:update_code", "netguru:check_rollbar"
@@ -140,11 +142,13 @@ module Netguru
 
           desc "Sends hipchat notifcation on fail"
           task :set_hipchat do
+
             set :hipchat_client, HipChat::Client.new(hipchat_token)
             set :human, ENV['HIPCHAT_USER'] ||  fetch(:hipchat_user, nil) || `whoami`
             on_rollback do
               hipchat_client[hipchat_room_name].send("Deploy", "#{human} cancelled deployment of #{application} to #{stage}.", color: :red, notify: true)
             end
+
           end
 
           desc "Sends hipchat notifcation on success"
@@ -252,7 +256,7 @@ module Netguru
             end
 
             if standup_response['commits'] and standup_response['commits']['rejected'].to_i > 0
-              hipchat_client['tradeguru'].send("Review", "help! <a href='#{standup_response['url']}'>#{application}</a> badly needs review.", color: :red, notify: false)
+              hipchat_client['tradeguru'].send("Review", "help! <a href='#{standup_response['url']}'>#{application}</a> badly needs review.", color: :red, notify: false) if fetch(:hipchat_token, false)
               logger.info "[review] Computer says no! - There are #{standup_response['commits']['rejected']} rejected commits - #{standup_response['url']}"
               abort
             else
