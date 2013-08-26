@@ -1,6 +1,8 @@
 server {
   server_name app.name.com *.app.name.com;
   root /home/<%= Netguru.application_name %>/app/current/public;
+  access_log /home/<%= Netguru.application_name %>/app/log/access.log;
+  error_log /home/<%= Netguru.application_name %>/app/log/error.log;
   listen 80;
   passenger_enabled on;
   rails_env staging;

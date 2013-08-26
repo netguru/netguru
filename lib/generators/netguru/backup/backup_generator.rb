@@ -5,9 +5,8 @@ class Netguru::BackupGenerator < Rails::Generators::Base
     install_safe
     install_rake
     install_schedule
-    puts "Add a gem to your Gemfile manually:"
-    puts "gem 'astrails-safe' # for non-mongodb"
-    puts "gem 'netguru-safe', github: 'netguru/safe' # for mongodb"
+    puts "Add a sage gem to your Gemfile manually:"
+    puts "gem 'safe', github: 'safe' # for mongodb"
     puts "Now go and visit config/safe.rb and lib/tasks/backup.rake to make sure you are using proper settings!"
   end
 
