@@ -244,24 +244,24 @@ module Netguru
             end
           end
 
-          #ask sc
           task :review do
-
             begin
               standup_response = JSON.parse(Netguru::Api.get("/review"))
+              commits_by_state = standup_response['commits_by_state']
+              commits_by_state.default = 0
+              project_url      = standup_response['project']['url']
             rescue => e
               logger.info "[review] Review process was not setup properly - #{e}"
               abort
             end
 
-            if standup_response['commits'] and standup_response['commits']['rejected'].to_i > 0
-              hipchat_client['tradeguru'].send("Review", "help! <a href='#{standup_response['url']}'>#{application}</a> badly needs review.", color: :red, notify: false) if fetch(:hipchat_token, false)
-              logger.info "[review] Computer says no! - There are #{standup_response['commits']['rejected']} rejected commits - #{standup_response['url']}"
+            if commits_by_state['rejected'].to_i > 0
+              hipchat_client['tradeguru'].send("Review", "Help! <a href='#{project_url}'>#{application}</a> badly needs review.", color: :red, notify: false) if fetch(:hipchat_token, false)
+              logger.info "[review] Computer says no! - There are #{commits_by_state['rejected']} rejected commits - #{project_url}"
               abort
             else
-              logger.info "[review] Pending #{standup_response['commits']['pending']}, passed #{standup_response['commits']['passed']}"
+              logger.info "[review] Pending #{commits_by_state['pending']}, passed #{commits_by_state['passed']}"
             end
-
           end
 
           # tag release with timestamp, e.g. 201206161435-production
