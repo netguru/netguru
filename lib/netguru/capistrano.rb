@@ -247,7 +247,7 @@ module Netguru
           task :review do
             begin
               standup_response = JSON.parse(Netguru::Api.get("/review"))
-              commits_by_state = standup_response['commits_by_state']
+              commits_by_state = standup_response.fetch('commits_by_state'){ {} }
               commits_by_state.default = 0
               project_url      = standup_response['project']['url']
             rescue => e
