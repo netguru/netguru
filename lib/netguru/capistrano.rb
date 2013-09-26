@@ -249,13 +249,13 @@ module Netguru
               standup_response = JSON.parse(Netguru::Api.get("/review"))
               commits_by_state = standup_response.fetch('commits_by_state'){ {} }
               commits_by_state.default = 0
-              project_url      = standup_response['project']['url']
             rescue => e
               logger.info "[review] Review process was not setup properly - #{e}"
               abort
             end
 
             if commits_by_state['rejected'].to_i > 0
+              project_url = standup_response['project']['url']
               hipchat_client['tradeguru'].send("Review", "Help! <a href='#{project_url}'>#{application}</a> badly needs review.", color: :red, notify: false) if fetch(:hipchat_token, false)
               logger.info "[review] Computer says no! - There are #{commits_by_state['rejected']} rejected commits - #{project_url}"
               abort
