@@ -1,4 +1,3 @@
-require "netguru/rollbar"
 require "netguru/version"
 require "netguru/capistrano"
 require "netguru/railtie" if defined?(Rails) and Rails.version >= '3'

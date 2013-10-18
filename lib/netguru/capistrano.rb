@@ -112,7 +112,6 @@ module Netguru
         end
 
         before "deploy:update_code", "netguru:review"
-        before "deploy:update_code", "netguru:check_rollbar"
         after "deploy:update_code", "bundle:install"
         after "deploy:update_code", "netguru:write_release"
         after "deploy:update_code", "netguru:update_crontab"
@@ -231,17 +230,7 @@ module Netguru
           end
 
           task :check_rollbar do
-            if fetch("stage", "staging") =~ /beta|production/
-              rollbar = ::Netguru::Rollbar.new Netguru.config.rollbar.read_token
-              begin
-                rollbar.exec_capistrano_task
-              rescue Netguru::Rollbar::Errors => e
-                logger.info e.message
-                abort
-              end
-            else
-              logger.info "Skipping rollbar check!"
-            end
+            #no-op
           end
 
           task :review do

@@ -8,22 +8,6 @@ describe Netguru::Capistrano do
     Netguru::Capistrano.load_into(@configuration)
   end
 
-  describe "check Rollbar" do
-    it "initialize Rollbar with variable from config" do
-       Netguru.stub(:config).and_return(Konf.new({"rollbar" => { "read_token" => 'secret' }}))
-      @configuration.set :stage, "production"
-      rollbar = stub "Rollbar", exec_capistrano_task: true
-      ::Netguru::Rollbar.should_receive(:new).with("secret").and_return rollbar
-      @configuration.find_and_execute_task('netguru:check_rollbar')
-    end
-
-    it "doesn't check rollbar during deployment to staging" do
-      @configuration.set :stage, "staging"
-      ::Netguru::Rollbar.should_not_receive(:new)
-      @configuration.find_and_execute_task('netguru:check_rollbar')
-    end
-  end
-
   it "define write_timestamp task" do
     @configuration.find_task('netguru:write_timestamp').should_not be_nil
   end
