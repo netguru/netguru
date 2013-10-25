@@ -9,8 +9,6 @@ module Netguru
   class Railtie < Rails::Railtie
     if Rails.env.development?
       initializer "netguru.railties" do |app|
-        app.config.middleware.use Netguru::Middleware::GitChange
-
         BulletEnabler.enable!(app)
       end
     end
