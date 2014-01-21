@@ -9,4 +9,8 @@ module Netguru
   def self.config
     @@config ||= Konf.new('config/netguru.yml')
   end
+
+  def self.devtools
+    config.fetch('devtools') { Konf.new({}) }
+  end
 end
