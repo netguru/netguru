@@ -33,9 +33,9 @@ module Netguru
       def flush_messages
         payload = data.to_json
         if @external_id
-          Thread.new{ Netguru::Api.post("/external_deployments/#{@external_id}", _method: :put, payload: payload) }
+          Thread.new{ Netguru::Api.post("external_deployments/#{@external_id}", _method: :put, payload: payload) }
         else
-          @external_id = Netguru::Api.post('/external_deployments', payload: payload)
+          @external_id = Netguru::Api.post('external_deployments', payload: payload)
         end
         @messages = {}
       end
@@ -43,21 +43,21 @@ module Netguru
       def finish
         payload = data.to_json
         if @external_id
-          Netguru::Api.post("/external_deployments/#{@external_id}", _method: :put, payload: payload)
+          Netguru::Api.post("external_deployments/#{@external_id}", _method: :put, payload: payload)
         else
-          @external_id = Netguru::Api.post('/external_deployments', payload: payload)
+          @external_id = Netguru::Api.post('external_deployments', payload: payload)
         end
         @messages = {}
       end
 
       def log_success
         payload = { state: 'finished' }.to_json
-        Netguru::Api.post("/external_deployments/#{@external_id}", _method: :put, payload: payload)
+        Netguru::Api.post("external_deployments/#{@external_id}", _method: :put, payload: payload)
       end
 
       def log_failure
         payload = { state: 'failed' }.to_json
-        Netguru::Api.post("/external_deployments/#{@external_id}", _method: :put, payload: payload)
+        Netguru::Api.post("external_deployments/#{@external_id}", _method: :put, payload: payload)
       end
 
       def method_missing(method_name, *args)
