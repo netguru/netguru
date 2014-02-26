@@ -212,7 +212,7 @@ module Netguru
           end
           #precompile assets
           task :precompile do
-            run "cd #{current_path} && #{runner} rake assets:precompile"
+            run "cd #{current_path} && #{runner} rake assets:precompile --trace"
           end
           #backup db
           task :backup do
