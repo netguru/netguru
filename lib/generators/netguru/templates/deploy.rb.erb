@@ -1,8 +1,4 @@
 # -*- encoding : utf-8 -*-
-set :hipchat_token, "hipchat token goes here"
-set :hipchat_room_name, "<%= Netguru.application_name %>"
-set :hipchat_announce, false
-
 task :production do
   set :stage, 'production'
   set :webserver, "production server name goes here"
