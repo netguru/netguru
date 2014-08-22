@@ -1,3 +1,3 @@
 module Netguru
-  VERSION = "0.0.10.0"
+  VERSION = "0.0.11"
 end
