@@ -2,7 +2,6 @@
 require 'open-uri'
 require 'capistrano'
 require 'json'
-require 'hipchat'
 require 'netguru'
 
 module Netguru
@@ -100,12 +99,6 @@ module Netguru
 
         #common tasks
 
-        unless fetch(:local_logger, false)
-          require 'netguru/capistrano/remote_logger'
-          before "deploy:update", "netguru:set_logger"
-          after "deploy", "netguru:flush_logger"
-        end
-
         if fetch(:hipchat_token, false)
           before "deploy:update_code", "netguru:set_hipchat"
           after "deploy", "netguru:notify_hipchat"
@@ -123,36 +116,6 @@ module Netguru
         after "production", "netguru:set_tagging"
 
         namespace :netguru do
-          desc "Flush rest of the messages"
-          task :flush_logger do
-            logger.device.finish
-            logger.device.log_success
-          end
-
-          desc "Set for the case of failure"
-          task :set_logger do
-            logger.device = Netguru::Capistrano::RemoteLogger.new(application, stage)
-            on_rollback do
-              logger.device.finish
-              logger.device.log_failure
-            end
-          end
-
-          desc "Sends hipchat notifcation on fail"
-          task :set_hipchat do
-
-            set :hipchat_client, HipChat::Client.new(hipchat_token)
-            set :human, ENV['HIPCHAT_USER'] ||  fetch(:hipchat_user, nil) || `whoami`
-            on_rollback do
-              hipchat_client[hipchat_room_name].send("Deploy", "#{human} cancelled deployment of #{application} to #{stage}.", color: :red, notify: true)
-            end
-
-          end
-
-          desc "Sends hipchat notifcation on success"
-          task :notify_hipchat do
-            hipchat_client[hipchat_room_name].send("Deploy", "#{human} finished deployment of #{application} to #{stage}.", color: :green, notify: false)
-          end
 
           #migrate data (for data-enabled projects)
           task :migrate_data do
@@ -245,7 +208,6 @@ module Netguru
 
             if commits_by_state['rejected'].to_i > 0
               project_url = standup_response['project']['url']
-              hipchat_client['tradeguru'].send("Review", "Help! <a href='#{project_url}'>#{application}</a> badly needs review.", color: :red, notify: false) if fetch(:hipchat_token, false)
               logger.info "[review] Computer says no! - There are #{commits_by_state['rejected']} rejected commits - #{project_url}"
               abort
             else
