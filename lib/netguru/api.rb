@@ -13,12 +13,6 @@ class Netguru::Api
     request(url, req)
   end
 
-  def self.get(path)
-    url = URI.parse("#{Netguru.config.api.url}/#{path}")
-    req = Net::HTTP::Get.new(url.path + "?token=#{Netguru.config.api.token}")
-    request(url, req)
-  end
-
   def self.request(url, req)
     sock = Net::HTTP.new(url.host, url.port)
     sock.use_ssl = (url.scheme == 'https')

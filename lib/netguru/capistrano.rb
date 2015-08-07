@@ -104,7 +104,6 @@ module Netguru
           after "deploy", "netguru:notify_hipchat"
         end
 
-        before "deploy:update_code", "netguru:review"
         after "deploy:update_code", "bundle:install"
         after "deploy:update_code", "netguru:write_release"
         after "deploy:update_code", "netguru:update_crontab"
@@ -194,25 +193,6 @@ module Netguru
 
           task :check_rollbar do
             #no-op
-          end
-
-          task :review do
-            begin
-              standup_response = JSON.parse(Netguru::Api.get("review"))
-              commits_by_state = standup_response.fetch('commits_by_state'){ {} }
-              commits_by_state.default = 0
-            rescue => e
-              logger.info "[review] Review process was not setup properly - #{e}"
-              abort
-            end
-
-            if commits_by_state['rejected'].to_i > 0
-              project_url = standup_response['project']['url']
-              logger.info "[review] Computer says no! - There are #{commits_by_state['rejected']} rejected commits - #{project_url}"
-              abort
-            else
-              logger.info "[review] Pending #{commits_by_state['pending']}, passed #{commits_by_state['passed']}"
-            end
           end
 
           # tag release with timestamp, e.g. 201206161435-production
