@@ -7,3 +7,4 @@ Example:
 
     This will create:
         .git/hooks/post-merge
+        .git/hooks/prepare-commit-msg
